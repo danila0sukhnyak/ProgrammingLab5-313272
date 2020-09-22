@@ -6,6 +6,8 @@ import org.example.exception.InterruptScriptException;
 import org.example.service.IConsoleService;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -37,24 +39,21 @@ public class ExecuteCommand extends AbstractCommand {
 
         try {
             File file = new File(args[1]);
-            InputStreamReader fr = new InputStreamReader(new FileInputStream(file), "UTF-8");
+            InputStreamReader fr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(fr);
             String line;
             consoleService.printLn("***Началось выполнение скрипта: " + args[1] + "***");
             Bootstrap.execute_script_check.add("execute_script " + args[1]);
-
+            ArrayList<String> lines = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if(!Bootstrap.execute_script_check.contains(line)) {
                     if(line.contains("execute_script")){
                         Bootstrap.execute_script_check.add(line);
-                        serviceLocator.executeCommands(line);
-                        Bootstrap.execute_script_check.remove(line);
                     }
-                    else{
-                        serviceLocator.executeCommands(line);
-                    }
+                    lines.add(line);
                 }
             }
+            serviceLocator.executeCommands(lines);
             Bootstrap.execute_script_check.remove("execute_script " + args[1]);
             consoleService.printLn("***Выполнение скрипта завершено: " + args[1] + "***");
         } catch (IOException e) {

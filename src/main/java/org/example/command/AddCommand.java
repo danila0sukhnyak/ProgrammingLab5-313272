@@ -2,7 +2,6 @@ package org.example.command;
 
 import org.example.enums.Color;
 import org.example.enums.MusicGenre;
-import org.example.exception.InterruptInputException;
 import org.example.model.Coordinates;
 import org.example.model.MusicBand;
 import org.example.model.Person;

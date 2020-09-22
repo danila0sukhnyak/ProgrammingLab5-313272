@@ -5,6 +5,7 @@ import org.example.dao.IMusicBandDAO;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface ServiceLocator {
@@ -16,5 +17,5 @@ public interface ServiceLocator {
 
     Map<String, AbstractCommand> getCommands();
 
-    void executeCommands(String line);
+    void executeCommands(ArrayList<String> line);
 }

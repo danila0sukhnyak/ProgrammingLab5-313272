@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * Реализация сервиса работы с пользовательским вводом-выводом.
@@ -13,7 +14,7 @@ import java.io.InputStreamReader;
 public class ConsoleService implements IConsoleService {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private boolean isSystemIn = true;
-
+    public static ArrayList<String> tmp = new ArrayList<>();
     public void setInputStream(InputStream inputStream) {
         this.isSystemIn = false;
         this.reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -36,18 +37,9 @@ public class ConsoleService implements IConsoleService {
 
     @Override
     public String read() {
-        String s = null;
-        try {
-            if (!isSystemIn && !reader.ready()) {
-                throw new InterruptScriptException();
-            }
-            s = reader.readLine();
-            if (!isSystemIn) {
-                printLn(s);
-            }
-        } catch (IOException e) {
-            printLn("Ошибка потока данных");
-        }
-        return s;
+        String result = ConsoleService.tmp.get(0);
+        System.out.println(result);
+        ConsoleService.tmp.remove(0);
+        return result;
     }
 }

@@ -45,23 +45,33 @@ public class Bootstrap implements ServiceLocator {
         System.exit(0);
     }
 
-    /**
-     * Начинает исполнение введенных с консоли комманд в цикле с условием выхода введенная строка = "exit"
-     *
-     * @throws InterruptScriptException перебрасывается с уровня выше
-     */
-    public void executeCommands(String line) {
-        String command = "";
-        try {
-            String[] params = line.split(" ");
-            command = params[0];
-            if (!commands.containsKey(command)) {
-                consoleService.printLn("Такой комманды не существует, наберите help для справки");
-            } else {
-                commands.get(command).execute(params);
-            }
-        } catch (Exception ignored){}
 
+    public void executeCommands(String line) {
+        ArrayList<String> s = new ArrayList<>();
+        s.add(line);
+        executeCommands(s);
+    }
+    public void executeCommands(ArrayList<String> lines) {
+        ConsoleService.tmp = lines;
+        try {
+            for (String line : lines) {
+                try {
+                    String[] params = line.split(" ");
+                    String command = params[0];
+                    if (!commands.containsKey(command)) {
+                        consoleService.printLn("Такой комманды не существует, наберите help для справки");
+                    } else {
+                        System.out.println(line);
+                        ConsoleService.tmp.remove(0);
+                        commands.get(command).execute(params);
+                    }
+                    if (line.contains("execute_script")) {
+                        Bootstrap.execute_script_check.remove(line);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }catch (Exception ignored){}
     }
 
     /**

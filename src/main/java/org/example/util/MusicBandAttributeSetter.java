@@ -1,7 +1,6 @@
 package org.example.util;
 
 import org.example.exception.InterruptInputException;
-import org.example.exception.MusicBandWrongAttributeException;
 import org.example.model.MusicBand;
 import org.example.service.IConsoleService;
 
