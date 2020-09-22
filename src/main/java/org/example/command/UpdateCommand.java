@@ -3,6 +3,7 @@ package org.example.command;
 import org.example.enums.Color;
 import org.example.enums.MusicGenre;
 import org.example.exception.InterruptInputException;
+import org.example.exception.MusicBandNotFoundException;
 import org.example.model.MusicBand;
 import org.example.util.MusicBandAttributeSetter;
 
@@ -33,9 +34,9 @@ public class UpdateCommand extends AbstractCommand {
             consoleService.printLn("Неверный формат аргумента");
             return;
         }
-        MusicBand musicBand = musicBandDAO.getById(id);
-        MusicBandAttributeSetter setter = new MusicBandAttributeSetter(consoleService);
         try {
+            MusicBand musicBand = musicBandDAO.getById(id);
+            MusicBandAttributeSetter setter = new MusicBandAttributeSetter(consoleService);
             setter.setAttribute(musicBand,
                     "Введите название группы",
                     s -> s.setName(consoleService.read()));
@@ -72,11 +73,14 @@ public class UpdateCommand extends AbstractCommand {
                         }
                         s.getFrontMan().setPassportID(line);
                     });
+            musicBandDAO.update(musicBand, id);
         } catch (InterruptInputException e) {
             consoleService.printLn("Обновление элемента прервано");
             return;
+        } catch (MusicBandNotFoundException e){
+            consoleService.printLn("Такого элемента нет");
+            return;
         }
-        musicBandDAO.update(musicBand, id);
         consoleService.printLn("Элемент успешно обновлен!");
     }
 }
