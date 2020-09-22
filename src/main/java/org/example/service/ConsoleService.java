@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.bootstrap.Bootstrap;
 import org.example.exception.InterruptScriptException;
 
 import java.io.BufferedReader;
@@ -37,9 +38,26 @@ public class ConsoleService implements IConsoleService {
 
     @Override
     public String read() {
-        String result = ConsoleService.tmp.get(1);
-        System.out.println(result);
-        ConsoleService.tmp.remove(1);
-        return result;
+        if(Bootstrap.isEx) {
+            String result = ConsoleService.tmp.get(1);
+            System.out.println(result);
+            ConsoleService.tmp.remove(1);
+            return result;
+        }
+        else{
+            String s = null;
+            try {
+                if (!isSystemIn && !reader.ready()) {
+                    throw new InterruptScriptException();
+                }
+                s = reader.readLine();
+                if (!isSystemIn) {
+                    printLn(s);
+                }
+            } catch (IOException e) {
+                printLn("Ошибка потока данных");
+            }
+            return s;
+        }
     }
 }

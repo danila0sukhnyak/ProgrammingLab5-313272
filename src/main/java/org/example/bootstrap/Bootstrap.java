@@ -21,7 +21,7 @@ public class Bootstrap implements ServiceLocator {
     private IFileService fileService = new FileService("", consoleService);
     private Map<String, AbstractCommand> commands = new HashMap<>();
     public static ArrayList<String> execute_script_check = new ArrayList<>();
-
+    public static boolean isEx = false;
 
     /**
      * Запускает приложение
@@ -47,11 +47,23 @@ public class Bootstrap implements ServiceLocator {
 
 
     public void executeCommands(String line) {
-        ArrayList<String> s = new ArrayList<>();
-        s.add(line);
-        executeCommands(s);
+        isEx = false;
+        String[] params = line.split(" ");
+        String command = params[0];
+        if(!execute_script_check.contains(line)) {
+            if (!commands.containsKey(command)) {
+                consoleService.printLn("Такой комманды не существует, наберите help для справки");
+            } else {
+                try {
+                    commands.get(command).execute(params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     public void executeCommands(ArrayList<String> lines) {
+        isEx = true;
         ConsoleService.tmp = lines;
         for (String line : lines) {
             String[] params = line.split(" ");
