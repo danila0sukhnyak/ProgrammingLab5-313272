@@ -10,9 +10,7 @@ import org.example.service.FileService;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Класс-загрузчик, используется для старта приложения и доступа к необходимым сервисам.
@@ -22,6 +20,8 @@ public class Bootstrap implements ServiceLocator {
     private IConsoleService consoleService = new ConsoleService();
     private IFileService fileService = new FileService("", consoleService);
     private Map<String, AbstractCommand> commands = new HashMap<>();
+    public static ArrayList<String> execute_script_check = new ArrayList<>();
+
 
     /**
      * Запускает приложение
@@ -141,4 +141,6 @@ public class Bootstrap implements ServiceLocator {
     public void setMusicDAO(IMusicBandDAO musicDAO) {
         this.musicDAO = musicDAO;
     }
+
+
 }

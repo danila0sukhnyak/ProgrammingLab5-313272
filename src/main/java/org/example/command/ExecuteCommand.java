@@ -1,5 +1,6 @@
 package org.example.command;
 
+import org.example.bootstrap.Bootstrap;
 import org.example.bootstrap.ServiceLocator;
 import org.example.exception.InterruptScriptException;
 import org.example.service.IConsoleService;
@@ -40,10 +41,21 @@ public class ExecuteCommand extends AbstractCommand {
             BufferedReader reader = new BufferedReader(fr);
             String line;
             consoleService.printLn("***Началось выполнение скрипта: " + args[1] + "***");
+            Bootstrap.execute_script_check.add("execute_script " + args[1]);
+
             while ((line = reader.readLine()) != null) {
-                serviceLocator.executeCommands(line);
+                if(!Bootstrap.execute_script_check.contains(line)) {
+                    if(line.contains("execute_script")){
+                        Bootstrap.execute_script_check.add(line);
+                        serviceLocator.executeCommands(line);
+                        Bootstrap.execute_script_check.remove(line);
+                    }
+                    else{
+                        serviceLocator.executeCommands(line);
+                    }
+                }
             }
-        } catch (InterruptScriptException e) {
+            Bootstrap.execute_script_check.remove("execute_script " + args[1]);
             consoleService.printLn("***Выполнение скрипта завершено: " + args[1] + "***");
         } catch (IOException e) {
             consoleService.printLn("Ошибка при чтении файла скрипта");
