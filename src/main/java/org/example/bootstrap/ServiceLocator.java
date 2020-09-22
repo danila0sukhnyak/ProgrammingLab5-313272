@@ -16,5 +16,5 @@ public interface ServiceLocator {
 
     Map<String, AbstractCommand> getCommands();
 
-    void executeCommands();
+    void executeCommands(String line);
 }

@@ -36,7 +36,13 @@ public class Bootstrap implements ServiceLocator {
         }
         initCommands();
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
-        executeCommands();
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            executeCommands(line);
+        }
+        System.out.println("Завершение работы");
+        System.exit(0);
     }
 
     /**
@@ -44,23 +50,18 @@ public class Bootstrap implements ServiceLocator {
      *
      * @throws InterruptScriptException перебрасывается с уровня выше
      */
-    public void executeCommands() {
+    public void executeCommands(String line) {
         String command = "";
-        Scanner scanner = new Scanner(System.in);
-        while (!command.equals("exit") && scanner.hasNextLine()) {
-            try {
-                String line = scanner.nextLine();
-                String[] params = line.split(" ");
-                command = params[0];
-                if (!commands.containsKey(command)) {
-                    consoleService.printLn("Такой комманды не существует, наберите help для справки");
-                } else {
-                    commands.get(command).execute(params);
-                }
-            } catch (Exception ignored){}
-        }
-        System.out.println("Завершение работы");
-        System.exit(0);
+        try {
+            String[] params = line.split(" ");
+            command = params[0];
+            if (!commands.containsKey(command)) {
+                consoleService.printLn("Такой комманды не существует, наберите help для справки");
+            } else {
+                commands.get(command).execute(params);
+            }
+        } catch (Exception ignored){}
+
     }
 
     /**

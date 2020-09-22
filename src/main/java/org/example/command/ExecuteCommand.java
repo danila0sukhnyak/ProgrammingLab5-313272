@@ -4,10 +4,7 @@ import org.example.bootstrap.ServiceLocator;
 import org.example.exception.InterruptScriptException;
 import org.example.service.IConsoleService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -36,26 +33,22 @@ public class ExecuteCommand extends AbstractCommand {
             consoleService.printLn("Не хватает аргумента");
             return;
         }
-        File file = new File(args[1]);
-        InputStream inputStream = null;
+
         try {
-            inputStream = new FileInputStream(file);
-            consoleService.setInputStream(inputStream);
-            consoleService.printLn("***Началось выполнение скрипта***");
-            serviceLocator.executeCommands();
+            File file = new File(args[1]);
+            InputStreamReader fr = new InputStreamReader(new FileInputStream(file), "UTF-8");
+            BufferedReader reader = new BufferedReader(fr);
+            String line;
+            consoleService.printLn("***Началось выполнение скрипта: " + args[1] + "***");
+            while ((line = reader.readLine()) != null) {
+                serviceLocator.executeCommands(line);
+            }
         } catch (InterruptScriptException e) {
-            consoleService.printLn("***Выполнение скрипта завершено***");
+            consoleService.printLn("***Выполнение скрипта завершено: " + args[1] + "***");
         } catch (IOException e) {
             consoleService.printLn("Ошибка при чтении файла скрипта");
         } finally {
             consoleService.setSystemIn();
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }
