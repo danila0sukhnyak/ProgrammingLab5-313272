@@ -37,9 +37,9 @@ public class ConsoleService implements IConsoleService {
 
     @Override
     public String read() {
-        String result = ConsoleService.tmp.get(0);
+        String result = ConsoleService.tmp.get(1);
         System.out.println(result);
-        ConsoleService.tmp.remove(0);
+        ConsoleService.tmp.remove(1);
         return result;
     }
 }

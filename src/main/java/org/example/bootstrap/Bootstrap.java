@@ -61,9 +61,8 @@ public class Bootstrap implements ServiceLocator {
                     if (!commands.containsKey(command)) {
                         consoleService.printLn("Такой комманды не существует, наберите help для справки");
                     } else {
-                        System.out.println(line);
-                        ConsoleService.tmp.remove(0);
                         commands.get(command).execute(params);
+                        ConsoleService.tmp.remove(0);
                     }
                     if (line.contains("execute_script")) {
                         Bootstrap.execute_script_check.remove(line);
