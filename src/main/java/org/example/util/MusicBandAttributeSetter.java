@@ -35,9 +35,6 @@ public class MusicBandAttributeSetter {
             try {
                 consumer.accept(musicBand);
                 stop = true;
-            } catch (MusicBandWrongAttributeException e) {
-                consoleService.printLn(e.getMessage());
-                askDoAgain();
             } catch (NumberFormatException e) {
                 consoleService.printLn("Требуется ввести число");
                 askDoAgain();

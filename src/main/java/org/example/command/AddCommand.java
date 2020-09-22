@@ -57,7 +57,7 @@ public class AddCommand extends AbstractCommand {
                     s -> s.getFrontMan().setName(consoleService.read()));
             setter.setAttribute(musicBand,
                     "Введите рост солиста",
-                    s -> s.getFrontMan().setHeight(Double.valueOf(consoleService.read())));
+                    s -> s.getFrontMan().setHeight(Double.parseDouble(consoleService.read())));
             setter.setAttribute(musicBand,
                     String.format("Введите цвет глаз солиста %s", Arrays.toString(Color.values())),
                     s -> s.getFrontMan().setEyeColor(consoleService.read()));
@@ -68,7 +68,7 @@ public class AddCommand extends AbstractCommand {
                         musicBandDAO.checkPassportIDUnique(line);
                         s.getFrontMan().setPassportID(line);
                     });
-        } catch (InterruptInputException e) {
+        } catch (Exception e) {
             consoleService.printLn("Добавление элемента прервано");
             return;
         }

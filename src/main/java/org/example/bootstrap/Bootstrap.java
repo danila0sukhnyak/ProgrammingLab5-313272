@@ -12,6 +12,7 @@ import org.example.service.IFileService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Класс-загрузчик, используется для старта приложения и доступа к необходимым сервисам.
@@ -45,25 +46,21 @@ public class Bootstrap implements ServiceLocator {
      */
     public void executeCommands() {
         String command = "";
-        while (!command.equals("exit")) {
+        Scanner scanner = new Scanner(System.in);
+        while (!command.equals("exit") && scanner.hasNextLine()) {
             try {
-                String line = consoleService.read();
-                if (line != null) {
-                    String[] params = line.split(" ");
-                    command = params[0];
-                    if (!commands.containsKey(command)) {
-                        consoleService.printLn("Такой комманды не существует, наберите help для справки");
-                    } else {
-                        commands.get(command).execute(params);
-                    }
+                String line = scanner.nextLine();
+                String[] params = line.split(" ");
+                command = params[0];
+                if (!commands.containsKey(command)) {
+                    consoleService.printLn("Такой комманды не существует, наберите help для справки");
+                } else {
+                    commands.get(command).execute(params);
                 }
-            } catch (InterruptScriptException e) {
-                throw e;
-            } catch (Exception e) {
-                consoleService.printLn(e.getMessage());
-                e.printStackTrace();
-            }
+            } catch (Exception ignored){}
         }
+        System.out.println("Завершение работы");
+        System.exit(0);
     }
 
     /**
