@@ -9,4 +9,4 @@ public class App {
         bootstrap.start(args);
     }
 }
-// Тупая багованная лаба
+// Идиотская багованная лаба
