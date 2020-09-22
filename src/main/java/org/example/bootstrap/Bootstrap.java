@@ -53,24 +53,21 @@ public class Bootstrap implements ServiceLocator {
     }
     public void executeCommands(ArrayList<String> lines) {
         ConsoleService.tmp = lines;
-        try {
-            for (String line : lines) {
-                try {
-                    String[] params = line.split(" ");
-                    String command = params[0];
-                    if (!commands.containsKey(command)) {
-                        consoleService.printLn("Такой комманды не существует, наберите help для справки");
-                    } else {
+        for (String line : lines) {
+            String[] params = line.split(" ");
+            String command = params[0];
+            if(!execute_script_check.contains(line)) {
+                if (!commands.containsKey(command)) {
+                    consoleService.printLn("Такой комманды не существует, наберите help для справки");
+                } else {
+                    try {
                         commands.get(command).execute(params);
-                        ConsoleService.tmp.remove(0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    if (line.contains("execute_script")) {
-                        Bootstrap.execute_script_check.remove(line);
-                    }
-                } catch (Exception ignored) {
                 }
             }
-        }catch (Exception ignored){}
+        }
     }
 
     /**

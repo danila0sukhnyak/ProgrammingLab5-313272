@@ -46,12 +46,7 @@ public class ExecuteCommand extends AbstractCommand {
             Bootstrap.execute_script_check.add("execute_script " + args[1]);
             ArrayList<String> lines = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                if(!Bootstrap.execute_script_check.contains(line)) {
-                    if(line.contains("execute_script")){
-                        Bootstrap.execute_script_check.add(line);
-                    }
-                    lines.add(line);
-                }
+                lines.add(line);
             }
             serviceLocator.executeCommands(lines);
             Bootstrap.execute_script_check.remove("execute_script " + args[1]);
