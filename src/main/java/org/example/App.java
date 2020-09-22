@@ -11,3 +11,4 @@ public class App {
         bootstrap.start(args);
     }
 }
+// Тупая нерабочая лаба
