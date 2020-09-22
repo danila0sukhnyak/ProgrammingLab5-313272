@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: org.example.App
+Class-Path: hamcrest-core-1.3.jar jackson-annotations-2.9.0.jar jackson-
+ core-2.9.8.jar jackson-databind-2.9.8.jar jackson-dataformat-xml-2.9.8.
+ jar jackson-datatype-jsr310-2.9.8.jar jackson-module-jaxb-annotations-2
+ .9.8.jar junit-4.11.jar stax2-api-3.1.4.jar woodstox-core-5.0.3.jar
+
