@@ -6,11 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lab_work" />
+        <module name="server" />
+        <module name="clients" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="lab_work" target="8" />
+      <module name="client" target="1.7" />
+      <module name="client.main" target="1.8" />
+      <module name="client.test" target="1.8" />
+      <module name="org.example.server.main" target="1.8" />
+      <module name="org.example.server.test" target="1.8" />
+      <module name="server.main" target="1.8" />
+      <module name="server.test" target="1.8" />
+      <module name="servers" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
