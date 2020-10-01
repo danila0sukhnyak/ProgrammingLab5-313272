@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import org.example.bootstrap.ServiceLocator;
-import org.example.exception.InterruptApplicationException;
 import org.example.model.Message;
 
 import java.io.*;
@@ -43,59 +42,16 @@ public class ClientController {
                 System.out.println("Введите help");
                 while (true) {
                     selector.select();
-                    Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-                    while (iterator.hasNext()) {
-                        SelectionKey key = (SelectionKey) iterator.next();
+                    for (SelectionKey key : selector.selectedKeys()) {
                         //iterator.remove(); не работает на helios
                         if (key.isValid()) {
                             SocketChannel client = (SocketChannel) key.channel();
                             if (client != null) {
                                 try {
-                                    if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
-                                        try {
-                                            if (messages.isEmpty()) {
-                                                fillMessagesQueue();
-                                            }
-                                            Message message = messages.poll();
-                                            if (message == null) {
-                                                continue;
-                                            } else {
-                                                sendSocketObject(client, message);
-                                                key.interestOps(SelectionKey.OP_READ);
-                                                client.register(selector, SelectionKey.OP_READ);
-                                                break;
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                            System.out.println("Повторное подлючение");
-                                            try {
-                                                selector = Selector.open();
-                                                connectionClient = SocketChannel.open();
-                                                connectionClient.connect(new InetSocketAddress(hostname, port));
-                                                connectionClient.configureBlocking(false);
-                                                connectionClient.register(selector, SelectionKey.OP_WRITE);
-                                            } catch (Exception ignored) {
-                                            }
-                                            key.interestOps(SelectionKey.OP_WRITE);
-                                            client.register(selector, SelectionKey.OP_WRITE);
-                                            sleep(500);
-                                            continue;
-                                        } catch (InterruptApplicationException e){
-                                            System.out.println("Завершение работы.");
-                                            client.close();
-                                            System.exit(0);
-                                        }
-                                    }
-                                    if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
-                                        Message message = getSocketObject(client);
-                                        System.out.println(message.getString());
-                                        key.interestOps(SelectionKey.OP_WRITE);
-                                        client.register(selector, SelectionKey.OP_WRITE);
-                                        sleep(500);
-                                        continue;
-                                    }
-                                } catch (StreamCorruptedException e){
-                                    for (int i = 0; i<1000; i++) {
+                                    if (WriteThread(selector, key, client)) continue;
+                                    if (ReadThread(selector, key, client)) continue;
+                                } catch (StreamCorruptedException e) {
+                                    for (int i = 0; i < 100; i++) {
                                         try {
                                             System.out.println("Попытка подключения к серверу: " + i);
                                             selector = Selector.open();
@@ -105,7 +61,7 @@ public class ClientController {
                                             connectionClient.register(selector, SelectionKey.OP_WRITE);
                                             System.out.println("Введите help");
                                             break;
-                                        }catch (Exception e1){
+                                        } catch (Exception not_ignored) {
                                             sleep(1000);
                                         }
                                     }
@@ -125,6 +81,32 @@ public class ClientController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean WriteThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException {
+        if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
+            if (messages.isEmpty()) { fillMessagesQueue(); }
+            Message message = messages.poll();
+            if (message != null) {
+                sendSocketObject(client, message);
+                key.interestOps(SelectionKey.OP_READ);
+                client.register(selector, SelectionKey.OP_READ);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ReadThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException, ClassNotFoundException, InterruptedException {
+        if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
+            Message message = getSocketObject(client);
+            System.out.println(message.getString());
+            key.interestOps(SelectionKey.OP_WRITE);
+            client.register(selector, SelectionKey.OP_WRITE);
+            sleep(500);
+            return true;
+        }
+        return false;
     }
 
     private void fillMessagesQueue() {

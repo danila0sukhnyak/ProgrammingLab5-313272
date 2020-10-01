@@ -1,0 +1,24 @@
+<DataStorage>
+  <bands>
+    <bands>
+      <id>1601582215735</id>
+      <name>1</name>
+      <coordinates>
+        <x>1</x>
+        <y>1.0</y>
+      </coordinates>
+      <creationDate>2020-10-01 22:56:55</creationDate>
+      <numberOfParticipants>1</numberOfParticipants>
+      <description>1</description>
+      <genre>POP</genre>
+      <frontMan>
+        <name>1</name>
+        <height>1.0</height>
+        <passportID>1</passportID>
+        <eyeColor>RED</eyeColor>
+      </frontMan>
+    </bands>
+  </bands>
+  <initDate>2020-10-01 22:56:34</initDate>
+  <type>ArrayList</type>
+</DataStorage>
