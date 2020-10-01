@@ -63,7 +63,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <scp localFile="${project.basedir}\target\Server-1.0-SNAPSHOT.jar" remoteToFile="s285896@helios.se.ifmo.ru:/home/s285896/lab8/server.jar" verbose="true" password="kts231" trust="true" port="2222"> </scp>
+                                <scp localFile="${project.basedir}\target\Server-1.0-SNAPSHOT.jar" remoteToFile="s284187@helios.se.ifmo.ru:/home/s284187/lab6/server.jar" verbose="true" password="umr350" trust="true" port="2222"> </scp>
                             </target>
                         </configuration>
                     </execution>
