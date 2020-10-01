@@ -18,7 +18,6 @@
       <module name="lab_work" target="8" />
       <module name="org.example.server.main" target="1.8" />
       <module name="org.example.server.test" target="1.8" />
-      <module name="server" target="1.8" />
       <module name="server.main" target="1.8" />
       <module name="server.test" target="1.8" />
       <module name="servers" target="1.8" />
