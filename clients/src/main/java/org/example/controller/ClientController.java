@@ -62,10 +62,10 @@ public class ClientController {
                                             System.out.println("Введите help");
                                             break;
                                         } catch (Exception not_ignored) {
-                                            sleep(1000);
+                                            Thread.sleep(1000);
                                         }
                                     }
-                                } catch (IOException | NoSuchElementException | InterruptedException e) {
+                                } catch (IOException | NoSuchElementException e) {
                                     System.out.println("Завершение работы.");
                                     client.close();
                                     e.printStackTrace();
@@ -97,13 +97,12 @@ public class ClientController {
         return false;
     }
 
-    private boolean ReadThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException, ClassNotFoundException, InterruptedException {
+    private boolean ReadThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException, ClassNotFoundException {
         if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
             Message message = getSocketObject(client);
             System.out.println(message.getString());
             key.interestOps(SelectionKey.OP_WRITE);
             client.register(selector, SelectionKey.OP_WRITE);
-            sleep(500);
             return true;
         }
         return false;
