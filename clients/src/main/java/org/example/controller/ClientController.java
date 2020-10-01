@@ -13,6 +13,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 public class ClientController {
     private static final int BUFF_SIZE = 1000000;
     String hostname;
@@ -76,7 +78,7 @@ public class ClientController {
                                             }
                                             key.interestOps(SelectionKey.OP_WRITE);
                                             client.register(selector, SelectionKey.OP_WRITE);
-                                            Thread.sleep(500);
+                                            sleep(500);
                                             continue;
                                         } catch (InterruptApplicationException e){
                                             System.out.println("Завершение работы.");
@@ -89,8 +91,23 @@ public class ClientController {
                                         System.out.println(message.getString());
                                         key.interestOps(SelectionKey.OP_WRITE);
                                         client.register(selector, SelectionKey.OP_WRITE);
-                                        Thread.sleep(500);
+                                        sleep(500);
                                         continue;
+                                    }
+                                } catch (StreamCorruptedException e){
+                                    for (int i = 0; i<1000; i++) {
+                                        try {
+                                            System.out.println("Попытка подключения к серверу: " + i);
+                                            selector = Selector.open();
+                                            connectionClient = SocketChannel.open();
+                                            connectionClient.connect(new InetSocketAddress(hostname, port));
+                                            connectionClient.configureBlocking(false);
+                                            connectionClient.register(selector, SelectionKey.OP_WRITE);
+                                            System.out.println("Введите help");
+                                            break;
+                                        }catch (Exception e1){
+                                            sleep(1000);
+                                        }
                                     }
                                 } catch (IOException | NoSuchElementException | InterruptedException e) {
                                     System.out.println("Завершение работы.");

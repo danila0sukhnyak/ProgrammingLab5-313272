@@ -48,7 +48,9 @@ public class ExecuteServerCommand extends AbstractServerCommand {
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-            serviceLocator.executeCommands(lines);
+            for(String l : lines) {
+                serviceLocator.executeCommands(l);
+            }
             Bootstrap.execute_script_check.remove("execute_script " + args.getArgs());
             return ("***Выполнение скрипта завершено: " + args.getArgs() + "***");
         } catch (IOException e) {

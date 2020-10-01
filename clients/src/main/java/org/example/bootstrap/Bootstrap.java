@@ -3,10 +3,12 @@ package org.example.bootstrap;
 import org.example.command.*;
 import org.example.command.server.AbstractServerCommand;
 import org.example.controller.ClientController;
+import org.example.dao.IMusicBandDAO;
 import org.example.exception.InterruptApplicationException;
 import org.example.model.Message;
 import org.example.service.ConsoleService;
 import org.example.service.IConsoleService;
+import org.example.service.IFileService;
 
 import java.util.*;
 
@@ -53,6 +55,16 @@ public class Bootstrap implements ServiceLocator {
             }
         }
         return new LinkedList<>();
+    }
+
+    @Override
+    public IMusicBandDAO getMusicDAO() {
+        return null;
+    }
+
+    @Override
+    public IFileService getFileService() {
+        return null;
     }
 
     public void executeCommands(ArrayList<String> lines, Queue<Message> messages) {
