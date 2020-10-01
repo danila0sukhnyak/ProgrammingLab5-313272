@@ -10,6 +10,8 @@ import org.example.service.IConsoleService;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class ExecuteCommand extends AbstractCommand {
 
@@ -39,10 +41,11 @@ public class ExecuteCommand extends AbstractCommand {
      * @return
      */
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return null;
+            return messages;
         }
 
         try {
@@ -56,7 +59,7 @@ public class ExecuteCommand extends AbstractCommand {
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-            serviceLocator.executeCommands(lines);
+            serviceLocator.executeCommands(lines, messages);
             Bootstrap.execute_script_check.remove("execute_script " + args[1]);
             consoleService.printLn("***Выполнение скрипта завершено: " + args[1] + "***");
         } catch (IOException e) {
@@ -64,6 +67,6 @@ public class ExecuteCommand extends AbstractCommand {
         } finally {
             consoleService.setSystemIn();
         }
-        return null;
+        return messages;
     }
 }

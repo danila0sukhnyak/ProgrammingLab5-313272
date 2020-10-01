@@ -3,7 +3,10 @@ package org.example.command;
 import org.example.command.server.AbstractServerCommand;
 import org.example.command.server.RemoveServerCommand;
 import org.example.model.Message;
-import org.example.model.MusicBand;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class RemoveCommand extends AbstractCommand {
 
@@ -23,17 +26,17 @@ public class RemoveCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return null;
+            return new LinkedList<>();
         }
         try {
             Long.valueOf(args[1]);
         } catch (NumberFormatException e) {
             consoleService.printLn("Неверный формат аргумента");
-            return null;
+            return new LinkedList<>();
         }
-        return new Message(serverCommand(), args[1]);
+        return new LinkedList<>(Collections.singletonList(new Message(serverCommand(), args[1])));
     }
 }

@@ -11,6 +11,8 @@ import org.example.model.MusicBand;
 import org.example.util.MusicBandAttributeSetter;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class UpdateCommand extends AbstractCommand {
 
@@ -30,16 +32,17 @@ public class UpdateCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return null;
+            return messages;
         }
         try {
             Long.valueOf(args[1]);
         } catch (NumberFormatException e) {
             consoleService.printLn("Неверный формат аргумента");
-            return null;
+            return messages;
         }
         try {
             MusicBand musicBand = new MusicBand();
@@ -77,13 +80,14 @@ public class UpdateCommand extends AbstractCommand {
                         String line = consoleService.read();
                         s.getFrontMan().setPassportID(line);
                     });
-            return new Message(serverCommand(), musicBand, args[1]);
+            messages.add(new Message(serverCommand(), musicBand, args[1]));
         } catch (InterruptInputException e) {
             consoleService.printLn("Обновление элемента прервано");
-            return null;
+            return messages;
         } catch (MusicBandNotFoundException e) {
             consoleService.printLn("Такого элемента нет");
-            return null;
+            return messages;
         }
+        return messages;
     }
 }

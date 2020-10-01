@@ -3,30 +3,18 @@ package org.example.bootstrap;
 import org.example.command.*;
 import org.example.command.server.AbstractServerCommand;
 import org.example.controller.ClientController;
-import org.example.dao.IMusicBandDAO;
-import org.example.dao.MusicBandDAO;
-import org.example.model.DataStorage;
+import org.example.exception.InterruptApplicationException;
 import org.example.model.Message;
 import org.example.service.ConsoleService;
-import org.example.service.FileService;
 import org.example.service.IConsoleService;
-import org.example.service.IFileService;
-import org.example.util.CommandService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Класс-загрузчик, используется для старта приложения и доступа к необходимым сервисам.
  */
 public class Bootstrap implements ServiceLocator {
-    private IMusicBandDAO musicDAO = new MusicBandDAO();
     private IConsoleService consoleService = new ConsoleService();
-    private CommandService commandService = new CommandService(this);
-
-    private IFileService fileService = new FileService("", consoleService);
     private Map<String, AbstractCommand> commands = new HashMap<>();
     public static ArrayList<String> execute_script_check = new ArrayList<>();
     public static boolean isEx = false;
@@ -37,28 +25,17 @@ public class Bootstrap implements ServiceLocator {
      * @param args аргументы приложения
      */
     public void start(String[] args) {
-        if (args != null && args.length > 0) {
-            initCollection(args[0]);
-        } else {
-            consoleService.printLn("Отсутвует аргумент с адресом файла, коллекция не загружена");
-        }
         initCommands();
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
 
         ClientController clientController = new ClientController("127.0.0.1", "27015", this);
         clientController.run();
-//        Scanner scanner = new Scanner(System.in);
-//
-//        while (scanner.hasNextLine()) {
-//            String line = scanner.nextLine();
-//            executeCommands(line);
-//        }
         System.out.println("Завершение работы");
         System.exit(0);
     }
 
 
-    public Message executeCommands(String line) {
+    public Queue<Message> executeCommands(String line) {
         isEx = false;
         String[] params = line.split(" ");
         String command = params[0];
@@ -68,15 +45,17 @@ public class Bootstrap implements ServiceLocator {
             } else {
                 try {
                     return commands.get(command).execute(params);
+                } catch (InterruptApplicationException e) {
+                    throw e;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        return null;
+        return new LinkedList<>();
     }
 
-    public void executeCommands(ArrayList<String> lines) {
+    public void executeCommands(ArrayList<String> lines, Queue<Message> messages) {
         isEx = true;
         ConsoleService.tmp = lines;
         for (String line : lines) {
@@ -87,25 +66,12 @@ public class Bootstrap implements ServiceLocator {
                     consoleService.printLn("Такой комманды не существует, наберите help для справки");
                 } else {
                     try {
-                        commands.get(command).execute(params);
+                        messages.addAll(commands.get(command).execute(params));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Инициализирует коллекцию данными из файла
-     *
-     * @param arg путь к файлу
-     */
-    private void initCollection(String arg) {
-        fileService = new FileService(arg, consoleService);
-        DataStorage dataStorage = fileService.readFromXml();
-        if (dataStorage != null) {
-            musicDAO.init(dataStorage);
         }
     }
 
@@ -155,29 +121,5 @@ public class Bootstrap implements ServiceLocator {
 
     public void setCommands(Map<String, AbstractCommand> commands) {
         this.commands = commands;
-    }
-
-    public IFileService getFileService() {
-        return fileService;
-    }
-
-    public void setFileService(IFileService fileService) {
-        this.fileService = fileService;
-    }
-
-    public IMusicBandDAO getMusicDAO() {
-        return musicDAO;
-    }
-
-    public void setMusicDAO(IMusicBandDAO musicDAO) {
-        this.musicDAO = musicDAO;
-    }
-
-    public CommandService getCommandService() {
-        return commandService;
-    }
-
-    public void setCommandService(CommandService commandService) {
-        this.commandService = commandService;
     }
 }

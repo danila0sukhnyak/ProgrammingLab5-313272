@@ -58,6 +58,7 @@ public class ServerController {
                 selector.select();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                 while (iterator.hasNext()) {
+
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {

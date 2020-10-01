@@ -5,6 +5,10 @@ import org.example.command.server.InfoServerCommand;
 import org.example.model.DataStorage;
 import org.example.model.Message;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class InfoCommand extends AbstractCommand {
 
     @Override
@@ -23,7 +27,7 @@ public class InfoCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
-        return new Message(serverCommand());
+    public Queue<Message> execute(String[] args) {
+        return new LinkedList<>(Collections.singletonList(new Message(serverCommand())));
     }
 }

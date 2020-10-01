@@ -5,6 +5,10 @@ import org.example.command.server.MaxByIdServerCommand;
 import org.example.model.Message;
 import org.example.model.MusicBand;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MaxByIdCommand extends AbstractCommand {
 
     @Override
@@ -23,7 +27,7 @@ public class MaxByIdCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
-        return new Message(serverCommand());
+    public Queue<Message> execute(String[] args) {
+        return new LinkedList<>(Collections.singletonList(new Message(serverCommand())));
     }
 }

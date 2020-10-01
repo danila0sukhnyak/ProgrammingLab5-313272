@@ -12,6 +12,8 @@ import org.example.model.Person;
 import org.example.util.MusicBandAttributeSetter;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AddIfMinCommand extends AbstractCommand {
 
@@ -33,11 +35,13 @@ public class AddIfMinCommand extends AbstractCommand {
     /**
      * Использует {@link MusicBandAttributeSetter} для наполнения объекта {@link MusicBand}
      * и добавляет его в коллекцию, если он самый меньший в коллекций или она пуста
+     *
      * @param args аргументы
      * @return
      */
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
         MusicBand musicBand = new MusicBand();
         musicBand.setFrontMan(new Person());
         musicBand.setCoordinates(new Coordinates());
@@ -74,19 +78,13 @@ public class AddIfMinCommand extends AbstractCommand {
                     "Введите номер паспорта солиста",
                     s -> {
                         String line = consoleService.read();
-                        musicBandDAO.checkPassportIDUnique(line);
                         s.getFrontMan().setPassportID(line);
                     });
         } catch (InterruptInputException e) {
             consoleService.printLn("Добавление элемента прервано");
-            return null;
+            return messages;
         }
-        MusicBand minimal = musicBandDAO.getMinimal();
-        if (minimal == null || musicBand.compareTo(minimal) < 0) {
-            return new Message(serverCommand(), musicBand);
-        } else {
-            consoleService.printLn("Введенный элемент больше минимального");
-        }
-        return null;
+        messages.add(new Message(serverCommand(), musicBand));
+        return messages;
     }
 }

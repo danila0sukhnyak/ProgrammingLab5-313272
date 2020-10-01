@@ -5,7 +5,10 @@ import org.example.command.server.RemoveByDescriptionServerCommand;
 import org.example.model.Message;
 import org.example.model.MusicBand;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class RemoveByDescriptionCommand extends AbstractCommand {
 
@@ -25,15 +28,15 @@ public class RemoveByDescriptionCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return null;
+            return new LinkedList<>();
         }
         String descr = "";
         for (int i = 1; i < args.length; i++) {
             descr = descr.concat(args[i]).concat(" ");
         }
-        return new Message(serverCommand(), descr.trim());
+        return new LinkedList<>(Collections.singletonList(new Message(serverCommand(), descr.trim())));
     }
 }

@@ -4,6 +4,9 @@ import org.example.command.server.AbstractServerCommand;
 import org.example.command.server.ClearServerCommand;
 import org.example.model.Message;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class ClearCommand extends AbstractCommand {
 
     @Override
@@ -22,7 +25,9 @@ public class ClearCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
-        return new Message(serverCommand());
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
+        messages.add(new Message(serverCommand()));
+        return messages;
     }
 }

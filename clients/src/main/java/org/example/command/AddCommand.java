@@ -11,6 +11,8 @@ import org.example.model.Person;
 import org.example.util.MusicBandAttributeSetter;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AddCommand extends AbstractCommand {
 
@@ -36,7 +38,8 @@ public class AddCommand extends AbstractCommand {
      * @param args аргументы
      */
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
         MusicBand musicBand = new MusicBand();
         musicBand.setFrontMan(new Person());
         musicBand.setCoordinates(new Coordinates());
@@ -73,13 +76,14 @@ public class AddCommand extends AbstractCommand {
                     "Введите номер паспорта солиста",
                     s -> {
                         String line = consoleService.read();
-                        musicBandDAO.checkPassportIDUnique(line);
                         s.getFrontMan().setPassportID(line);
                     });
         } catch (Exception e) {
             consoleService.printLn("Добавление элемента прервано");
-            return null;
+            return messages;
         }
-        return new Message(serverCommand(), musicBand);
+
+        messages.add(new Message(serverCommand(), musicBand));
+        return messages;
     }
 }

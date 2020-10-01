@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.bootstrap.ServiceLocator;
+import org.example.exception.InterruptApplicationException;
 import org.example.model.Message;
 
 import java.io.*;
@@ -10,15 +11,14 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientController {
     private static final int BUFF_SIZE = 1000000;
     String hostname;
     int port;
     ServiceLocator serviceLocator;
+    private Queue<Message> messages = new LinkedList<>();
 
     public ClientController(String hostname, String port, ServiceLocator serviceLocator) {
         this.hostname = hostname;
@@ -50,8 +50,10 @@ public class ClientController {
                                 try {
                                     if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
                                         try {
-                                            System.out.print(">");
-                                            Message message = readConsole();
+                                            if (messages.isEmpty()) {
+                                                fillMessagesQueue();
+                                            }
+                                            Message message = messages.poll();
                                             if (message == null) {
                                                 continue;
                                             } else {
@@ -73,6 +75,10 @@ public class ClientController {
                                             key.interestOps(SelectionKey.OP_WRITE);
                                             client.register(selector, SelectionKey.OP_WRITE);
                                             continue;
+                                        } catch (InterruptApplicationException e){
+                                            System.out.println("Завершение работы.");
+                                            client.close();
+                                            System.exit(0);
                                         }
                                     }
                                     if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
@@ -87,7 +93,6 @@ public class ClientController {
                                     System.out.println("Завершение работы.");
                                     client.close();
                                     e.printStackTrace();
-
                                     System.exit(0);
                                 }
                             }
@@ -102,9 +107,10 @@ public class ClientController {
         }
     }
 
-    private Message readConsole() {
+    private void fillMessagesQueue() {
         Scanner scanner = new Scanner(System.in);
-        return serviceLocator.executeCommands(scanner.nextLine());
+        System.out.print(">");
+        messages = serviceLocator.executeCommands(scanner.nextLine());
     }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {

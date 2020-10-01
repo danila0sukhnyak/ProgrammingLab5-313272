@@ -5,6 +5,10 @@ import org.example.command.server.ReorderServerCommand;
 import org.example.enums.SortStatus;
 import org.example.model.Message;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class ReorderCommand extends AbstractCommand {
 
     @Override
@@ -23,7 +27,7 @@ public class ReorderCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
-        return new Message(serverCommand());
+    public Queue<Message> execute(String[] args) {
+        return new LinkedList<>(Arrays.asList(new Message(serverCommand())));
     }
 }

@@ -4,6 +4,9 @@ import org.example.command.server.AbstractServerCommand;
 import org.example.command.server.FilterByDescriptionServerCommand;
 import org.example.model.Message;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class FilterByDescriptionCommand extends AbstractCommand {
 
     @Override
@@ -22,11 +25,13 @@ public class FilterByDescriptionCommand extends AbstractCommand {
     }
 
     @Override
-    public Message execute(String[] args) {
+    public Queue<Message> execute(String[] args) {
+        Queue<Message> messages = new LinkedList<>();
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return null;
+            return messages;
         }
-        return new Message(serverCommand(), args[1]);
+        messages.add(new Message(serverCommand(), args[1]));
+        return messages;
     }
 }
