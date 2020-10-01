@@ -1,6 +1,7 @@
 package org.example.bootstrap;
 
-import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.*;
+import org.example.command.server.AddServerCommand;
 import org.example.controller.ServerController;
 import org.example.dao.IMusicBandDAO;
 import org.example.dao.MusicBandDAO;
@@ -38,6 +39,7 @@ public class Bootstrap implements ServiceLocator {
             consoleService.printLn("Отсутвует аргумент с адресом файла, коллекция не загружена");
         }
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
+        initCommands();
         ServerController controller = new ServerController(this);
         controller.run();
         System.out.println("Завершение работы");
@@ -76,6 +78,37 @@ public class Bootstrap implements ServiceLocator {
         if (dataStorage != null) {
             musicDAO.init(dataStorage);
         }
+    }
+
+    /**
+     * Инициализирует комманды
+     */
+    private void initCommands() {
+        registryCommand(new AddIfMinServerCommand());
+        registryCommand(new AddServerCommand());
+        registryCommand(new ClearServerCommand());
+        registryCommand(new ExecuteServerCommand());
+        registryCommand(new FilterByDescriptionServerCommand());
+        registryCommand(new HelpServerCommand());
+        registryCommand(new InfoServerCommand());
+        registryCommand(new MaxByIdServerCommand());
+        registryCommand(new RemoveByDescriptionServerCommand());
+        registryCommand(new RemoveLastServerCommand());
+        registryCommand(new RemoveServerCommand());
+        registryCommand(new ReorderServerCommand());
+        registryCommand(new ShowServerCommand());
+        registryCommand(new UpdateServerCommand());
+    }
+
+    /**
+     * Добавляет объект комманды в мапу
+     */
+    private void registryCommand(final AbstractServerCommand command) {
+        if (command.command() == null || command.command().isEmpty()) {
+            return;
+        }
+        command.init(this);
+        commands.put(command.command(), command);
     }
 
     public IConsoleService getConsoleService() {

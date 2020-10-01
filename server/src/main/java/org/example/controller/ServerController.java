@@ -86,7 +86,7 @@ public class ServerController {
                                 Message message = getSocketObject(channel);
                                 message.setSocketChannel(channel);
                                 incomingMessages.add(message);
-                                System.out.println(message);
+                                System.out.println(message + " : " + message.getCommand() + " : " + message.getString() + " : " + message.getArgs());
                                 channel.register(selector, SelectionKey.OP_WRITE);
                             } catch (IOException e) {
                                 System.out.println("Клиент отключился");

@@ -46,7 +46,7 @@ public class ClientController {
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
                         SelectionKey key = (SelectionKey) iterator.next();
-                        //iterator.remove();
+                        //iterator.remove(); не работает на helios
                         if (key.isValid()) {
                             SocketChannel client = (SocketChannel) key.channel();
                             if (client != null) {
