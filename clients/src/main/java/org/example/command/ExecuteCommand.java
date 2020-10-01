@@ -2,7 +2,9 @@ package org.example.command;
 
 import org.example.bootstrap.Bootstrap;
 import org.example.bootstrap.ServiceLocator;
+import org.example.command.server.AbstractServerCommand;
 import org.example.exception.InterruptScriptException;
+import org.example.model.Message;
 import org.example.service.IConsoleService;
 
 import java.io.*;
@@ -21,6 +23,11 @@ public class ExecuteCommand extends AbstractCommand {
         return "Считать и исполнить скрипт из указанного файла";
     }
 
+    @Override
+    public AbstractServerCommand serverCommand() {
+        return null;
+    }
+
     /**
      * Создает {@link InputStream} из файла, устанавливает его в {@link IConsoleService}
      * взамен {@code System.in} затем запускает исполнение комманд в {@link ServiceLocator}
@@ -29,12 +36,13 @@ public class ExecuteCommand extends AbstractCommand {
      * устанавливает в {@link IConsoleService} консольный поток {@code System.in}
      *
      * @param args аргументы (1 - путь к файлу со скриптом)
+     * @return
      */
     @Override
-    public void execute(String[] args) {
+    public Message execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return;
+            return null;
         }
 
         try {
@@ -56,5 +64,6 @@ public class ExecuteCommand extends AbstractCommand {
         } finally {
             consoleService.setSystemIn();
         }
+        return null;
     }
 }

@@ -1,6 +1,9 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.ReorderServerCommand;
 import org.example.enums.SortStatus;
+import org.example.model.Message;
 
 public class ReorderCommand extends AbstractCommand {
 
@@ -15,17 +18,12 @@ public class ReorderCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        SortStatus reorder = musicBandDAO.reorder();
-        switch (reorder) {
-            case ASC:
-                consoleService.printLn("Коллекция отсортирована по возрастанию");
-                break;
-            case DESC:
-                consoleService.printLn("Коллекция отсортирована по убыванию");
-                break;
-            default:
-                break;
-        }
+    public AbstractServerCommand serverCommand() {
+        return new ReorderServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

@@ -1,5 +1,8 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.RemoveByDescriptionServerCommand;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 
 import java.util.List;
@@ -17,25 +20,20 @@ public class RemoveByDescriptionCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
+    public AbstractServerCommand serverCommand() {
+        return new RemoveByDescriptionServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return;
+            return null;
         }
         String descr = "";
         for (int i = 1; i < args.length; i++) {
             descr = descr.concat(args[i]).concat(" ");
         }
-
-        List<MusicBand> musicBands = musicBandDAO.removeByDescription(descr.trim());
-        if (musicBands.isEmpty()) {
-            consoleService.printLn("Совпадений не найдено");
-        } else {
-            consoleService.printLn("Удалены объекты:");
-            musicBands.forEach(s -> {
-                if (s != null)
-                    consoleService.printLn(s.toString());
-            });
-        }
+        return new Message(serverCommand(), descr.trim());
     }
 }

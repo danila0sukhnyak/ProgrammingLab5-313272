@@ -1,9 +1,12 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.UpdateServerCommand;
 import org.example.enums.Color;
 import org.example.enums.MusicGenre;
 import org.example.exception.InterruptInputException;
 import org.example.exception.MusicBandNotFoundException;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 import org.example.util.MusicBandAttributeSetter;
 
@@ -22,20 +25,24 @@ public class UpdateCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
+    public AbstractServerCommand serverCommand() {
+        return new UpdateServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return;
+            return null;
         }
-        Long id;
         try {
-            id = Long.valueOf(args[1]);
+            Long.valueOf(args[1]);
         } catch (NumberFormatException e) {
             consoleService.printLn("Неверный формат аргумента");
-            return;
+            return null;
         }
         try {
-            MusicBand musicBand = musicBandDAO.getById(id);
+            MusicBand musicBand = new MusicBand();
             MusicBandAttributeSetter setter = new MusicBandAttributeSetter(consoleService);
             setter.setAttribute(musicBand,
                     "Введите название группы",
@@ -68,19 +75,15 @@ public class UpdateCommand extends AbstractCommand {
                     "Введите номер паспорта солиста",
                     s -> {
                         String line = consoleService.read();
-                        if (!musicBand.getFrontMan().getPassportID().equals(line)) {
-                            musicBandDAO.checkPassportIDUnique(line);
-                        }
                         s.getFrontMan().setPassportID(line);
                     });
-            musicBandDAO.update(musicBand, id);
+            return new Message(serverCommand(), musicBand, args[1]);
         } catch (InterruptInputException e) {
             consoleService.printLn("Обновление элемента прервано");
-            return;
-        } catch (MusicBandNotFoundException e){
+            return null;
+        } catch (MusicBandNotFoundException e) {
             consoleService.printLn("Такого элемента нет");
-            return;
+            return null;
         }
-        consoleService.printLn("Элемент успешно обновлен!");
     }
 }

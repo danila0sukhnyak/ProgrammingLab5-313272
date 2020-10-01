@@ -36,18 +36,11 @@ public class ClientController {
                 SocketChannel connectionClient = SocketChannel.open();
                 connectionClient.connect(new InetSocketAddress(hostname, port));
                 connectionClient.configureBlocking(false);
-                //connectionClient.register(selector, SelectionKey.OP_CONNECT);
                 connectionClient.register(selector, SelectionKey.OP_WRITE);
-                int reconect_schetchick = 1;
-
-                Scanner scanner = new Scanner(System.in);
-                //session.closeSession();
                 System.out.println("Введите help");
                 while (true) {
                     selector.select();
-
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-
                     while (iterator.hasNext()) {
                         SelectionKey key = (SelectionKey) iterator.next();
                         //iterator.remove();
@@ -55,11 +48,10 @@ public class ClientController {
                             SocketChannel client = (SocketChannel) key.channel();
                             if (client != null) {
                                 try {
-
                                     if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
                                         try {
                                             System.out.print(">");
-                                            Message message = serviceLocator.getCommandService().getMessage(scanner.nextLine().trim().split(" "));
+                                            Message message = readConsole();
                                             if (message == null) {
                                                 continue;
                                             } else {
@@ -76,7 +68,6 @@ public class ClientController {
                                                 connectionClient = SocketChannel.open();
                                                 connectionClient.connect(new InetSocketAddress(hostname, port));
                                                 connectionClient.configureBlocking(false);
-                                                //connectionClient.register(selector, SelectionKey.OP_CONNECT);
                                             } catch (Exception ignored) {
                                             }
                                             key.interestOps(SelectionKey.OP_WRITE);
@@ -109,6 +100,11 @@ public class ClientController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Message readConsole() {
+        Scanner scanner = new Scanner(System.in);
+        return serviceLocator.executeCommands(scanner.nextLine());
     }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {

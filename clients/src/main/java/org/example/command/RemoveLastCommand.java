@@ -1,5 +1,8 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.RemoveLastServerCommand;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 
 public class RemoveLastCommand extends AbstractCommand {
@@ -15,12 +18,12 @@ public class RemoveLastCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        MusicBand musicBand = musicBandDAO.removeLast();
-        if (musicBand == null) {
-            consoleService.printLn("Коллекция пустая");
-        } else {
-            consoleService.printLn("Удален элемент с id = " + musicBand.getId());
-        }
+    public AbstractServerCommand serverCommand() {
+        return new RemoveLastServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

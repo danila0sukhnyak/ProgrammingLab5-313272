@@ -1,7 +1,9 @@
 package org.example.command;
 
 import org.example.bootstrap.ServiceLocator;
+import org.example.command.server.AbstractServerCommand;
 import org.example.dao.IMusicBandDAO;
+import org.example.model.Message;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
 
@@ -43,10 +45,15 @@ public abstract class AbstractCommand implements Serializable {
     public abstract String description();
 
     /**
+     * @return какую серверную команду вызывать
+     */
+    public abstract AbstractServerCommand serverCommand();
+
+    /**
      * Выполнение комманды
      *
      * @param args аргументы
      * @throws Exception ошибки при выполнении комманды
      */
-    public abstract void execute(String[] args) throws Exception;
+    public abstract Message execute(String[] args) throws Exception;
 }

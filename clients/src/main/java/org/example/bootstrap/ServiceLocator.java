@@ -1,8 +1,8 @@
 package org.example.bootstrap;
 
-import org.example.command.AbstractCommand;
 import org.example.command.server.AbstractServerCommand;
 import org.example.dao.IMusicBandDAO;
+import org.example.model.Message;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
 import org.example.util.CommandService;
@@ -20,6 +20,8 @@ public interface ServiceLocator {
     Map<String, AbstractServerCommand> getCommands();
 
     void executeCommands(ArrayList<String> line);
+
+    Message executeCommands(String line);
 
     CommandService getCommandService();
 

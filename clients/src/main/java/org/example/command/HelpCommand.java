@@ -1,5 +1,9 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.HelpServerCommand;
+import org.example.model.Message;
+
 public class HelpCommand extends AbstractCommand {
 
     @Override
@@ -13,7 +17,12 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        commands.forEach((key, value) -> consoleService.printLn(key + " : " + value.description()));
+    public AbstractServerCommand serverCommand() {
+        return new HelpServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

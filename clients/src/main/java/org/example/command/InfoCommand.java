@@ -1,6 +1,9 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.InfoServerCommand;
 import org.example.model.DataStorage;
+import org.example.model.Message;
 
 public class InfoCommand extends AbstractCommand {
 
@@ -15,8 +18,12 @@ public class InfoCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        DataStorage data = musicBandDAO.getData();
-        consoleService.printLn(data.toString());
+    public AbstractServerCommand serverCommand() {
+        return new InfoServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

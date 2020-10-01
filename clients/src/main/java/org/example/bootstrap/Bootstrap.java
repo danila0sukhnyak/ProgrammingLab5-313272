@@ -6,6 +6,7 @@ import org.example.controller.ClientController;
 import org.example.dao.IMusicBandDAO;
 import org.example.dao.MusicBandDAO;
 import org.example.model.DataStorage;
+import org.example.model.Message;
 import org.example.service.ConsoleService;
 import org.example.service.FileService;
 import org.example.service.IConsoleService;
@@ -57,7 +58,7 @@ public class Bootstrap implements ServiceLocator {
     }
 
 
-    public void executeCommands(String line) {
+    public Message executeCommands(String line) {
         isEx = false;
         String[] params = line.split(" ");
         String command = params[0];
@@ -66,12 +67,13 @@ public class Bootstrap implements ServiceLocator {
                 consoleService.printLn("Такой комманды не существует, наберите help для справки");
             } else {
                 try {
-                    commands.get(command).execute(params);
+                    return commands.get(command).execute(params);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+        return null;
     }
 
     public void executeCommands(ArrayList<String> lines) {
@@ -124,7 +126,6 @@ public class Bootstrap implements ServiceLocator {
         registryCommand(new RemoveCommand());
         registryCommand(new RemoveLastCommand());
         registryCommand(new ReorderCommand());
-        registryCommand(new SaveCommand());
         registryCommand(new ShowCommand());
         registryCommand(new UpdateCommand());
     }

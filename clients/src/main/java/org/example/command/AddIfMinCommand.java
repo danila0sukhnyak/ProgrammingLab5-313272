@@ -1,9 +1,12 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.AddIfMinServerCommand;
 import org.example.enums.Color;
 import org.example.enums.MusicGenre;
 import org.example.exception.InterruptInputException;
 import org.example.model.Coordinates;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 import org.example.model.Person;
 import org.example.util.MusicBandAttributeSetter;
@@ -21,13 +24,20 @@ public class AddIfMinCommand extends AbstractCommand {
     public String description() {
         return "Добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции";
     }
+
+    @Override
+    public AbstractServerCommand serverCommand() {
+        return new AddIfMinServerCommand();
+    }
+
     /**
      * Использует {@link MusicBandAttributeSetter} для наполнения объекта {@link MusicBand}
      * и добавляет его в коллекцию, если он самый меньший в коллекций или она пуста
      * @param args аргументы
+     * @return
      */
     @Override
-    public void execute(String[] args) {
+    public Message execute(String[] args) {
         MusicBand musicBand = new MusicBand();
         musicBand.setFrontMan(new Person());
         musicBand.setCoordinates(new Coordinates());
@@ -69,14 +79,14 @@ public class AddIfMinCommand extends AbstractCommand {
                     });
         } catch (InterruptInputException e) {
             consoleService.printLn("Добавление элемента прервано");
-            return;
+            return null;
         }
         MusicBand minimal = musicBandDAO.getMinimal();
         if (minimal == null || musicBand.compareTo(minimal) < 0) {
-            musicBandDAO.save(musicBand);
-            consoleService.printLn("Элемент успешно добавлен!");
+            return new Message(serverCommand(), musicBand);
         } else {
             consoleService.printLn("Введенный элемент больше минимального");
         }
+        return null;
     }
 }

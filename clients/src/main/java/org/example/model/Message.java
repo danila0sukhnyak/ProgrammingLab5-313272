@@ -83,4 +83,14 @@ public class Message implements Serializable {
         this.args = args;
     }
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "socketChannel=" + socketChannel +
+                ", string='" + string + '\'' +
+                ", command=" + command +
+                ", args='" + args + '\'' +
+                ", musicBand=" + musicBand +
+                '}';
+    }
 }

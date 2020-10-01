@@ -1,5 +1,9 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.ClearServerCommand;
+import org.example.model.Message;
+
 public class ClearCommand extends AbstractCommand {
 
     @Override
@@ -13,8 +17,12 @@ public class ClearCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        musicBandDAO.clear();
-        consoleService.printLn("Коллекция очищена");
+    public AbstractServerCommand serverCommand() {
+        return new ClearServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

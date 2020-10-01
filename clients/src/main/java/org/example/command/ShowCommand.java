@@ -1,5 +1,8 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.ShowServerCommand;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 
 import java.util.List;
@@ -17,15 +20,12 @@ public class ShowCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
-        List<MusicBand> all = musicBandDAO.getAll();
-        if (all.isEmpty()) {
-            consoleService.printLn("Коллекция пустая");
-        } else {
-            all.forEach(s -> {
-                if (s != null)
-                    consoleService.printLn(s.toString());
-            });
-        }
+    public AbstractServerCommand serverCommand() {
+        return new ShowServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
+        return new Message(serverCommand());
     }
 }

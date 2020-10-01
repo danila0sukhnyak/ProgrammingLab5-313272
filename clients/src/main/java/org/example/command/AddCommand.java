@@ -1,8 +1,11 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.AddServerCommand;
 import org.example.enums.Color;
 import org.example.enums.MusicGenre;
 import org.example.model.Coordinates;
+import org.example.model.Message;
 import org.example.model.MusicBand;
 import org.example.model.Person;
 import org.example.util.MusicBandAttributeSetter;
@@ -21,13 +24,19 @@ public class AddCommand extends AbstractCommand {
         return "Добавить новый элемент в коллекцию";
     }
 
+    @Override
+    public AbstractServerCommand serverCommand() {
+        return new AddServerCommand();
+    }
+
     /**
      * Использует {@link MusicBandAttributeSetter} для наполнения объекта {@link MusicBand}
      * и добавляет его в коллекцию
+     *
      * @param args аргументы
      */
     @Override
-    public void execute(String[] args) {
+    public Message execute(String[] args) {
         MusicBand musicBand = new MusicBand();
         musicBand.setFrontMan(new Person());
         musicBand.setCoordinates(new Coordinates());
@@ -69,9 +78,8 @@ public class AddCommand extends AbstractCommand {
                     });
         } catch (Exception e) {
             consoleService.printLn("Добавление элемента прервано");
-            return;
+            return null;
         }
-        musicBandDAO.save(musicBand);
-        consoleService.printLn("Элемент успешно добавлен!");
+        return new Message(serverCommand(), musicBand);
     }
 }

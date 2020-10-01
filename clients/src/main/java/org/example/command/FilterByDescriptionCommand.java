@@ -1,5 +1,9 @@
 package org.example.command;
 
+import org.example.command.server.AbstractServerCommand;
+import org.example.command.server.FilterByDescriptionServerCommand;
+import org.example.model.Message;
+
 public class FilterByDescriptionCommand extends AbstractCommand {
 
     @Override
@@ -13,14 +17,16 @@ public class FilterByDescriptionCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String[] args) {
+    public AbstractServerCommand serverCommand() {
+        return new FilterByDescriptionServerCommand();
+    }
+
+    @Override
+    public Message execute(String[] args) {
         if (args.length < 2 || args[1] == null) {
             consoleService.printLn("Не хватает аргумента");
-            return;
+            return null;
         }
-        musicBandDAO.filterByDescription(args[1]).forEach(s -> {
-            if (s != null)
-                consoleService.printLn(s.toString());
-        });
+        return new Message(serverCommand(), args[1]);
     }
 }
