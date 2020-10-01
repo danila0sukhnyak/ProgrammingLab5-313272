@@ -55,7 +55,7 @@ public class ServerController {
                     server_commands(console_line.toString());
                     console_line = new StringBuilder();
                 }
-                selector.select();
+                selector.selectNow();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                 while (iterator.hasNext()) {
 

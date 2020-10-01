@@ -19,6 +19,7 @@ public class ClientController {
     int port;
     ServiceLocator serviceLocator;
     private Queue<Message> messages = new LinkedList<>();
+    private Scanner scanner = new Scanner(System.in);
 
     public ClientController(String hostname, String port, ServiceLocator serviceLocator) {
         this.hostname = hostname;
@@ -70,10 +71,12 @@ public class ClientController {
                                                 connectionClient = SocketChannel.open();
                                                 connectionClient.connect(new InetSocketAddress(hostname, port));
                                                 connectionClient.configureBlocking(false);
+                                                connectionClient.register(selector, SelectionKey.OP_WRITE);
                                             } catch (Exception ignored) {
                                             }
                                             key.interestOps(SelectionKey.OP_WRITE);
                                             client.register(selector, SelectionKey.OP_WRITE);
+                                            Thread.sleep(500);
                                             continue;
                                         } catch (InterruptApplicationException e){
                                             System.out.println("Завершение работы.");
@@ -108,7 +111,6 @@ public class ClientController {
     }
 
     private void fillMessagesQueue() {
-        Scanner scanner = new Scanner(System.in);
         System.out.print(">");
         messages = serviceLocator.executeCommands(scanner.nextLine());
     }
