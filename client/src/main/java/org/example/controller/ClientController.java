@@ -110,7 +110,13 @@ public class ClientController {
 
     private void fillMessagesQueue() {
         System.out.print(">");
-        messages = serviceLocator.executeCommands(scanner.nextLine());
+        if(scanner.hasNextLine()) {
+            messages = serviceLocator.executeCommands(scanner.nextLine());
+        }
+        else{
+            System.out.println("Завершение работы");
+            System.exit(0);
+        }
     }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
