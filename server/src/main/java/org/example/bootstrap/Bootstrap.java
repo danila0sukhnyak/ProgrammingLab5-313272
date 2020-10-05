@@ -32,6 +32,7 @@ public class Bootstrap implements ServiceLocator {
      *
      * @param args аргументы приложения
      */
+
     public void start(String[] args) {
         if (args != null && args.length > 0) {
             initCollection(args[0]);
@@ -41,7 +42,7 @@ public class Bootstrap implements ServiceLocator {
         }
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
         initCommands();
-        ServerController controller = new ServerController(this);
+        ServerController controller = new ServerController(this, "127.0.0.1", "27015");
         controller.run();
         System.out.println("Завершение работы");
         System.exit(0);

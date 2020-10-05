@@ -21,13 +21,19 @@ import java.util.List;
 
 public class ServerController {
     private static final int BUFF_SIZE = 1000000;
-    static final String host = "127.0.0.1";
+    static String host = "127.0.0.1";
     static int port = 27015;
-    private ServiceLocator serviceLocator;
+    private final ServiceLocator serviceLocator;
     private static final List<Message> incomingMessages = new LinkedList<Message>();
 
     public ServerController(ServiceLocator serviceLocator) {
         this.serviceLocator = serviceLocator;
+    }
+
+    public ServerController(ServiceLocator serviceLocator, String host, String port) {
+        this.serviceLocator = serviceLocator;
+        ServerController.host = host;
+        ServerController.port = Integer.parseInt(port);
     }
 
     public void run() {
@@ -42,23 +48,14 @@ public class ServerController {
 
             StringBuilder console_line = new StringBuilder();
             while (true) {
-                if (System.in.available() > 0) {
-                    int ch = 0;
-                    while (true) {
-                        ch = System.in.read();
-                        if (ch == 10) {
-                            break;
-                        } else {
-                            console_line.append((char) ch);
-                        }
-                    }
-                    server_commands(console_line.toString());
-                    console_line = new StringBuilder();
-                }
+                console_line = CheckCommands(console_line);
                 selector.selectNow();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                 while (iterator.hasNext()) {
-
+                    /*
+                    Замедление сервера, хз зачем это
+                    На всякий случай
+                     */
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -68,50 +65,10 @@ public class ServerController {
                     SelectionKey key = (SelectionKey) iterator.next();
                     iterator.remove();
                     if (selector.isOpen()) {
-                        if (!key.isValid()) {
-                            continue;
-                        }
-
-                        if (key.isAcceptable() && key.isValid()) {
-                            SocketChannel client = server.accept();
-                            client.configureBlocking(false);
-                            client.register(selector, SelectionKey.OP_READ);
-                            System.out.println("Новое подключение");
-                            continue;
-                        }
-
-                        if (key.isReadable() && key.isValid()) {
-                            SocketChannel channel = (SocketChannel) key.channel();
-                            try {
-                                Message message = getSocketObject(channel);
-                                message.setSocketChannel(channel);
-                                incomingMessages.add(message);
-                                System.out.println(message + " : " + message.getCommand() + " : " + message.getString() + " : " + message.getArgs());
-                                channel.register(selector, SelectionKey.OP_WRITE);
-                            } catch (IOException e) {
-                                System.out.println("Клиент отключился");
-                                channel.close();
-                            }
-                            continue;
-
-                        }
-                        if (key.isWritable() && key.isValid()) {
-                            SocketChannel channel = (SocketChannel) key.channel();
-                            String result = "Неизвестная команда";
-                            for (Message mes : incomingMessages) {
-                                if (mes.getSocketChannel().equals(channel)) {
-                                    AbstractServerCommand command = mes.getCommand();
-                                    if (command != null) {
-                                        command.init(serviceLocator);
-                                        result = command.execute(mes);
-                                    }
-                                    incomingMessages.remove(mes);
-                                }
-                            }
-                            sendSocketObject(channel, new Message(result));
-                            channel.register(selector, SelectionKey.OP_READ);
-                            continue;
-                        }
+                        if (CheckKey(key)) continue;
+                        if (ConnectThread(selector, server, key)) continue;
+                        if (ReadThread(selector, key)) continue;
+                        if (WriteThread(selector, key)) continue;
                     }
                 }
             }
@@ -122,6 +79,78 @@ public class ServerController {
             System.out.println("Приложение завершено");
             e.printStackTrace();
         }
+    }
+
+    private StringBuilder CheckCommands(StringBuilder console_line) throws IOException {
+        if (System.in.available() > 0) {
+            int ch = 0;
+            while (true) {
+                ch = System.in.read();
+                if (ch == 10) {
+                    break;
+                } else {
+                    console_line.append((char) ch);
+                }
+            }
+            server_commands(console_line.toString());
+            console_line = new StringBuilder();
+        }
+        return console_line;
+    }
+
+    private boolean WriteThread(Selector selector, SelectionKey key) throws Exception {
+        if (key.isWritable() && key.isValid()) {
+            SocketChannel channel = (SocketChannel) key.channel();
+            String result = "Неизвестная команда";
+            for (Message mes : incomingMessages) {
+                if (mes.getSocketChannel().equals(channel)) {
+                    AbstractServerCommand command = mes.getCommand();
+                    if (command != null) {
+                        command.init(serviceLocator);
+                        result = command.execute(mes);
+                    }
+                    incomingMessages.remove(mes);
+                }
+            }
+            sendSocketObject(channel, new Message(result));
+            channel.register(selector, SelectionKey.OP_READ);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ReadThread(Selector selector, SelectionKey key) throws ClassNotFoundException, IOException {
+        if (key.isReadable() && key.isValid()) {
+            SocketChannel channel = (SocketChannel) key.channel();
+            try {
+                Message message = getSocketObject(channel);
+                message.setSocketChannel(channel);
+                incomingMessages.add(message);
+                System.out.println(message + " : " + message.getCommand() + " : " + message.getString() + " : " + message.getArgs());
+                channel.register(selector, SelectionKey.OP_WRITE);
+            } catch (IOException e) {
+                System.out.println("Клиент отключился");
+                channel.close();
+            }
+            return true;
+
+        }
+        return false;
+    }
+
+    private boolean ConnectThread(Selector selector, ServerSocketChannel server, SelectionKey key) throws IOException {
+        if (key.isAcceptable() && key.isValid()) {
+            SocketChannel client = server.accept();
+            client.configureBlocking(false);
+            client.register(selector, SelectionKey.OP_READ);
+            System.out.println("Новое подключение");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean CheckKey(SelectionKey key) {
+        return !key.isValid();
     }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
