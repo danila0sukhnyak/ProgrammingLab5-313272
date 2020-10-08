@@ -11,7 +11,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Client" target="1.8" />
       <module name="client.main" target="1.8" />
       <module name="client.test" target="1.8" />
       <module name="lab_work" target="8" />

@@ -51,20 +51,7 @@ public class ClientController {
                                     if (WriteThread(selector, key, client)) continue;
                                     if (ReadThread(selector, key, client)) continue;
                                 } catch (StreamCorruptedException e) {
-                                    for (int i = 0; i < 100; i++) {
-                                        try {
-                                            System.out.println("Попытка подключения к серверу: " + i);
-                                            selector = Selector.open();
-                                            connectionClient = SocketChannel.open();
-                                            connectionClient.connect(new InetSocketAddress(hostname, port));
-                                            connectionClient.configureBlocking(false);
-                                            connectionClient.register(selector, SelectionKey.OP_WRITE);
-                                            System.out.println("Введите help");
-                                            break;
-                                        } catch (Exception not_ignored) {
-                                            Thread.sleep(1000);
-                                        }
-                                    }
+                                    selector = tryReconnect(selector);
                                 } catch (IOException | NoSuchElementException e) {
                                     System.out.println("Завершение работы.");
                                     client.close();
@@ -81,6 +68,31 @@ public class ClientController {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Selector tryReconnect(Selector selector) throws InterruptedException {
+        SocketChannel connectionClient;
+        boolean isComplete = false;
+        for (int i = 1; i <= 100; i++) {
+            try {
+                System.out.println("Попытка подключения к серверу: " + i);
+                selector = Selector.open();
+                connectionClient = SocketChannel.open();
+                connectionClient.connect(new InetSocketAddress(hostname, port));
+                connectionClient.configureBlocking(false);
+                connectionClient.register(selector, SelectionKey.OP_WRITE);
+                System.out.println("Введите help");
+                isComplete = true;
+                break;
+            } catch (Exception not_ignored) {
+                Thread.sleep(1000);
+            }
+        }
+        if(!isComplete){
+            System.out.println("Завершение работы, сервер наелся и спит.");
+            System.exit(0);
+        }
+        return selector;
     }
 
     private boolean WriteThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException {
