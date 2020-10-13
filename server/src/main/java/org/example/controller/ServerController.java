@@ -1,11 +1,16 @@
 package org.example.controller;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.example.bootstrap.ServiceLocator;
 import org.example.command.server.AbstractServerCommand;
+import org.example.dao.DBController;
 import org.example.dao.IMusicBandDAO;
+import org.example.enums.AuthState;
 import org.example.model.DataStorage;
 import org.example.model.Message;
+import org.example.model.User;
 import org.example.service.IFileService;
+import org.example.util.DatabaseUtil;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -15,6 +20,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,8 +112,13 @@ public class ServerController {
                 if (mes.getSocketChannel().equals(channel)) {
                     AbstractServerCommand command = mes.getCommand();
                     if (command != null) {
-                        command.init(serviceLocator);
-                        result = command.execute(mes);
+                        String auth = auth(mes.getUser());
+                        if (!AuthState.AUTH_SUCCESS.name().equals(auth) && !command.command().equals("register")) {
+                            result = "Ошибка авторизации";
+                        } else {
+                            command.init(serviceLocator);
+                            result = command.execute(mes);
+                        }
                     }
                     incomingMessages.remove(mes);
                 }
@@ -124,9 +135,10 @@ public class ServerController {
             SocketChannel channel = (SocketChannel) key.channel();
             try {
                 Message message = getSocketObject(channel);
+
                 message.setSocketChannel(channel);
                 incomingMessages.add(message);
-                System.out.println(message + " : " + message.getCommand() + " : " + message.getString() + " : " + message.getArgs());
+                System.out.println(message + " : " + message.getCommand() + " : " + message.getString() + " : " + message.getArgs()+message.getUser());
                 channel.register(selector, SelectionKey.OP_WRITE);
             } catch (IOException e) {
                 System.out.println("Клиент отключился");
@@ -169,6 +181,26 @@ public class ServerController {
         objectOutputStream.writeObject(message);
         objectOutputStream.flush();
         client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
+    }
+
+    private String auth(User user) {
+        DBController dbController = serviceLocator.getDbController();
+        try {
+            dbController.setConnection(DatabaseUtil.getConnection());
+            User foundUser = dbController.findByName(user.getLogin());
+            if (foundUser == null) {
+                return "Пользователя не существует";
+            }
+            if (!foundUser.getPassword().equals(DigestUtils.md2Hex(user.getPassword()))) {
+                return "Неверный пароль";
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return "Ошибка на сервере";
+        } finally {
+            DatabaseUtil.closeConnection();
+        }
+        return AuthState.AUTH_SUCCESS.name();
     }
 
     private void server_commands(String s) {

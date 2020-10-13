@@ -1,6 +1,7 @@
 package org.example.bootstrap;
 
 import org.example.command.server.AbstractServerCommand;
+import org.example.dao.DBController;
 import org.example.dao.IMusicBandDAO;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
@@ -14,6 +15,8 @@ public interface ServiceLocator {
     IFileService getFileService();
 
     IMusicBandDAO getMusicDAO();
+
+    DBController getDbController();
 
     Map<String, AbstractServerCommand> getCommands();
 

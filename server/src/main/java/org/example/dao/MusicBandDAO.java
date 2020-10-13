@@ -1,12 +1,15 @@
 package org.example.dao;
 
+import org.example.bootstrap.ServiceLocator;
 import org.example.enums.SortStatus;
 import org.example.exception.MusicBandNotFoundException;
 import org.example.exception.MusicBandWrongAttributeException;
 import org.example.model.DataStorage;
 import org.example.model.MusicBand;
 import org.example.model.Person;
+import org.example.util.DatabaseUtil;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -17,11 +20,16 @@ import java.util.*;
  * дату инициализации, статус сортировки {@link SortStatus}
  */
 public class MusicBandDAO implements IMusicBandDAO {
+    ServiceLocator serviceLocator;
     List<MusicBand> musicBandList = new ArrayList<>();
     Set<String> passportIDUniqueValues = new HashSet<>();
     LocalDateTime initDate = LocalDateTime.now();
     String type = "ArrayList";
     SortStatus sortStatus = SortStatus.ASC;
+
+    public MusicBandDAO(ServiceLocator serviceLocator) {
+        this.serviceLocator = serviceLocator;
+    }
 
     /**
      * Проверяет объект на null, {@code passportID} на уникальность,
@@ -31,7 +39,7 @@ public class MusicBandDAO implements IMusicBandDAO {
      * @throws MusicBandWrongAttributeException при наличии невалидных аттрибутов
      */
     @Override
-    public void save(MusicBand musicBand) {
+    public void saveInCollection(MusicBand musicBand) {
         if (musicBand == null || musicBand.getFrontMan() == null) {
             throw new MusicBandWrongAttributeException("Значение поля не должно быть null");
         }
@@ -41,7 +49,48 @@ public class MusicBandDAO implements IMusicBandDAO {
         } else if (passportID != null) {
             passportIDUniqueValues.add(passportID);
         }
-        musicBandList.add(musicBand);
+        synchronized (this) {
+            musicBandList.add(musicBand);
+        }
+    }
+
+    public void save(MusicBand musicBand) {
+        serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
+        serviceLocator.getDbController().add(musicBand);
+        try {
+            serviceLocator.getDbController().getConnection().commit();
+            saveInCollection(musicBand);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                serviceLocator.getDbController().getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        finally {
+            DatabaseUtil.closeConnection();
+        }
+    }
+
+    public void update(MusicBand musicBand, Long id) {
+        serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
+        musicBand.setId(id);
+        serviceLocator.getDbController().update(musicBand);
+        try {
+            serviceLocator.getDbController().getConnection().commit();
+            updateInCollection(musicBand, id);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                serviceLocator.getDbController().getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        finally {
+            DatabaseUtil.closeConnection();
+        }
     }
 
     @Override
@@ -57,8 +106,7 @@ public class MusicBandDAO implements IMusicBandDAO {
      * @param id        id объекта для замены
      * @throws MusicBandWrongAttributeException при наличии невалидных аттрибутов
      */
-    @Override
-    public void update(MusicBand musicBand, Long id) {
+    public void updateInCollection(MusicBand musicBand, Long id) {
         int number = getNumberById(id);
         MusicBand oldBand = musicBandList.get(number);
         Person oldFrontMan = musicBandList.get(number).getFrontMan();
@@ -141,7 +189,7 @@ public class MusicBandDAO implements IMusicBandDAO {
             this.initDate = dataStorage.getInitDate();
         List<MusicBand> bands = dataStorage.getBands();
         for (MusicBand band : bands) {
-            save(band);
+            saveInCollection(band);
         }
     }
 

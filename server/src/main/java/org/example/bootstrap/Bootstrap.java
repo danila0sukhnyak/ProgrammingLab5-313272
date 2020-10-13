@@ -1,28 +1,31 @@
 package org.example.bootstrap;
 
 import org.example.command.server.*;
-import org.example.command.server.AddServerCommand;
 import org.example.controller.ServerController;
+import org.example.dao.DBController;
 import org.example.dao.IMusicBandDAO;
 import org.example.dao.MusicBandDAO;
 import org.example.model.DataStorage;
 import org.example.model.Message;
+import org.example.model.MusicBand;
 import org.example.service.ConsoleService;
 import org.example.service.FileService;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
+import org.example.util.DatabaseUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Класс-загрузчик, используется для старта приложения и доступа к необходимым сервисам.
  */
 public class Bootstrap implements ServiceLocator {
-    private IMusicBandDAO musicDAO = new MusicBandDAO();
+    private IMusicBandDAO musicDAO = new MusicBandDAO(this);
     private IConsoleService consoleService = new ConsoleService();
     private IFileService fileService = new FileService("", consoleService);
+    private DBController dbController = new DBController();
     private Map<String, AbstractServerCommand> commands = new HashMap<>();
     public static ArrayList<String> execute_script_check = new ArrayList<>();
     public static boolean isEx = false;
@@ -42,6 +45,24 @@ public class Bootstrap implements ServiceLocator {
         }
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
         initCommands();
+        dbController.setConnection(DatabaseUtil.getConnection());
+        dbController.createTable();
+        try {
+            List<MusicBand> all = dbController.findAll();
+            DataStorage dataStorage = new DataStorage();
+            dataStorage.setBands(all);
+            musicDAO.init(dataStorage);
+            dbController.getConnection().commit();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                dbController.getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            DatabaseUtil.closeConnection();
+        }
         ServerController controller = new ServerController(this, "127.0.0.1", "27015");
         controller.run();
         System.out.println("Завершение работы");
@@ -55,7 +76,7 @@ public class Bootstrap implements ServiceLocator {
         for (String line : lines) {
             String[] params = line.split(" ");
             String command = params[0];
-            if(!execute_script_check.contains(line)) {
+            if (!execute_script_check.contains(line)) {
                 if (!commands.containsKey(command)) {
                     consoleService.printLn("Такой комманды не существует, наберите help для справки");
                 } else {
@@ -100,6 +121,8 @@ public class Bootstrap implements ServiceLocator {
         registryCommand(new ReorderServerCommand());
         registryCommand(new ShowServerCommand());
         registryCommand(new UpdateServerCommand());
+        registryCommand(new AuthServerCommand());
+        registryCommand(new RegisterServerCommand());
     }
 
     /**
@@ -145,5 +168,11 @@ public class Bootstrap implements ServiceLocator {
         this.musicDAO = musicDAO;
     }
 
+    public DBController getDbController() {
+        return dbController;
+    }
 
+    public void setDbController(DBController dbController) {
+        this.dbController = dbController;
+    }
 }

@@ -12,6 +12,7 @@ public class Message implements Serializable {
     private AbstractServerCommand command;
     private String args;
     private MusicBand musicBand;
+    private User user;
 
     public Message(String string) {
         this.string = string;
@@ -20,6 +21,11 @@ public class Message implements Serializable {
     public Message(SocketChannel socketChannel, String string) {
         this.socketChannel = socketChannel;
         this.string = string;
+    }
+
+    public Message(AbstractServerCommand serverCommand, User user) {
+        this.command = serverCommand;
+        this.user = user;
     }
 
     public MusicBand getMusicBand() {
@@ -81,6 +87,14 @@ public class Message implements Serializable {
 
     public void setArgs(String args) {
         this.args = args;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

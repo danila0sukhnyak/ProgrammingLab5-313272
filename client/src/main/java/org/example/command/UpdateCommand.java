@@ -6,8 +6,10 @@ import org.example.enums.Color;
 import org.example.enums.MusicGenre;
 import org.example.exception.InterruptInputException;
 import org.example.exception.MusicBandNotFoundException;
+import org.example.model.Coordinates;
 import org.example.model.Message;
 import org.example.model.MusicBand;
+import org.example.model.Person;
 import org.example.util.MusicBandAttributeSetter;
 
 import java.util.Arrays;
@@ -46,6 +48,8 @@ public class UpdateCommand extends AbstractCommand {
         }
         try {
             MusicBand musicBand = new MusicBand();
+            musicBand.setCoordinates(new Coordinates());
+            musicBand.setFrontMan(new Person());
             MusicBandAttributeSetter setter = new MusicBandAttributeSetter(consoleService);
             setter.setAttribute(musicBand,
                     "Введите название группы",

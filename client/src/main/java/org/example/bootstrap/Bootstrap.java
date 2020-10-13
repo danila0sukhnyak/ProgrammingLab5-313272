@@ -106,6 +106,8 @@ public class Bootstrap implements ServiceLocator {
         registryCommand(new ReorderCommand());
         registryCommand(new ShowCommand());
         registryCommand(new UpdateCommand());
+        registryCommand(new AuthCommand());
+        registryCommand(new RegisterCommand());
     }
 
     /**

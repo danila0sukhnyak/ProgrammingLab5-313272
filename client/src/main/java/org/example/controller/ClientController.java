@@ -1,7 +1,10 @@
 package org.example.controller;
 
 import org.example.bootstrap.ServiceLocator;
+import org.example.enums.AuthState;
 import org.example.model.Message;
+import org.example.model.User;
+import org.example.util.UserHolder;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -10,9 +13,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.*;
-
-import static java.lang.Thread.sleep;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.Scanner;
 
 public class ClientController {
     private static final int BUFF_SIZE = 1000000;
@@ -21,6 +25,7 @@ public class ClientController {
     ServiceLocator serviceLocator;
     private Queue<Message> messages = new LinkedList<>();
     private Scanner scanner = new Scanner(System.in);
+    private User user = null;
 
     public ClientController(String hostname, String port, ServiceLocator serviceLocator) {
         this.hostname = hostname;
@@ -88,7 +93,7 @@ public class ClientController {
                 Thread.sleep(1000);
             }
         }
-        if(!isComplete){
+        if (!isComplete) {
             System.out.println("Завершение работы, сервер наелся и спит.");
             System.exit(0);
         }
@@ -97,9 +102,15 @@ public class ClientController {
 
     private boolean WriteThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException {
         if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
-            if (messages.isEmpty()) { fillMessagesQueue(); }
+            if (messages.isEmpty()) {
+                fillMessagesQueue();
+            }
             Message message = messages.poll();
             if (message != null) {
+                user = message.getUser();
+                if (!"register".equals(message.getCommand().command())) {
+                    message.setUser(UserHolder.getUser());
+                }
                 sendSocketObject(client, message);
                 key.interestOps(SelectionKey.OP_READ);
                 client.register(selector, SelectionKey.OP_READ);
@@ -112,7 +123,12 @@ public class ClientController {
     private boolean ReadThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException, ClassNotFoundException {
         if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
             Message message = getSocketObject(client);
-            System.out.println(message.getString());
+            if (message.getString().equals(AuthState.AUTH_SUCCESS.name())) {
+               UserHolder.setUser(user);
+                System.out.println("Успешная авторизация");
+            } else {
+                System.out.println(message.getString());
+            }
             key.interestOps(SelectionKey.OP_WRITE);
             client.register(selector, SelectionKey.OP_WRITE);
             return true;
@@ -122,10 +138,9 @@ public class ClientController {
 
     private void fillMessagesQueue() {
         System.out.print(">");
-        if(scanner.hasNextLine()) {
+        if (scanner.hasNextLine()) {
             messages = serviceLocator.executeCommands(scanner.nextLine());
-        }
-        else{
+        } else {
             System.out.println("Завершение работы");
             System.exit(0);
         }

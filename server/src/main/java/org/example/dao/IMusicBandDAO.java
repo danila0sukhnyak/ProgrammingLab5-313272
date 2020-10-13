@@ -46,4 +46,6 @@ public interface IMusicBandDAO {
     SortStatus reorder();
 
     List<MusicBand> filterByDescription(String description);
+
+    void saveInCollection(MusicBand musicBand);
 }
