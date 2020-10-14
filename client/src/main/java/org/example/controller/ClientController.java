@@ -44,7 +44,7 @@ public class ClientController {
                 connectionClient.connect(new InetSocketAddress(hostname, port));
                 connectionClient.configureBlocking(false);
                 connectionClient.register(selector, SelectionKey.OP_WRITE);
-                System.out.println("Введите help");
+                System.out.println("Введите auth для авторизации, register для регисрации. help - помощь");
                 while (true) {
                     selector.select();
                     for (SelectionKey key : selector.selectedKeys()) {

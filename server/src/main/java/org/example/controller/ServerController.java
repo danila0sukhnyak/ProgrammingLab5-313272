@@ -63,10 +63,10 @@ public class ServerController {
                     iterator.remove();
 
                     if (selector.isOpen()) {
-                        executorService.submit(new Reader(key));
                         Thread connector = new Thread(new Connector(key));
                         connector.setDaemon(true);
                         connector.start();
+                        executorService.submit(new Reader(key));
                         Thread executor = new Thread(new CommandExecute(key, serviceLocator));
                         executor.setDaemon(true);
                         executor.start();

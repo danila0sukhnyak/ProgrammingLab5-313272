@@ -26,6 +26,7 @@ public class ExitCommand extends AbstractCommand {
 
     @Override
     public Queue<Message> execute(String[] args) {
-        throw new InterruptApplicationException();
+        System.exit(0);
+        return null;
     }
 }

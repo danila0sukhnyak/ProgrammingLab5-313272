@@ -20,11 +20,11 @@ public class DatabaseUtil {
 
     public static Connection getConnection() {
         try {
-            Class.forName(properties.getProperty("jdbcDriver"));
+            Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(
-                    properties.getProperty("sqlAdress"),
-                    properties.getProperty("sqlUser"),
-                    properties.getProperty("sqlPass"));
+                    "jdbc:postgresql://pg:5432/studs",
+                    "s284187",
+                    "umr350");
             connection.setAutoCommit(false);
             return connection;
         } catch (Exception e) {
