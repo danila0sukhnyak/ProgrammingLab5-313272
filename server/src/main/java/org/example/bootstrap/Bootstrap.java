@@ -45,6 +45,14 @@ public class Bootstrap implements ServiceLocator {
         }
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
         initCommands();
+        initDB();
+        ServerController controller = new ServerController(this, "127.0.0.1", "27015");
+        controller.run();
+        System.out.println("Завершение работы");
+        System.exit(0);
+    }
+
+    private void initDB() {
         dbController.setConnection(DatabaseUtil.getConnection());
         dbController.createTable();
         try {
@@ -63,10 +71,6 @@ public class Bootstrap implements ServiceLocator {
         } finally {
             DatabaseUtil.closeConnection();
         }
-        ServerController controller = new ServerController(this, "127.0.0.1", "27015");
-        controller.run();
-        System.out.println("Завершение работы");
-        System.exit(0);
     }
 
 

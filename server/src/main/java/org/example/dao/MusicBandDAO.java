@@ -56,8 +56,11 @@ public class MusicBandDAO implements IMusicBandDAO {
 
     public void save(MusicBand musicBand) {
         serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
-        serviceLocator.getDbController().add(musicBand);
+
         try {
+            Long id = serviceLocator.getDbController().getId();
+            musicBand.setId(id);
+            serviceLocator.getDbController().add(musicBand);
             serviceLocator.getDbController().getConnection().commit();
             saveInCollection(musicBand);
         } catch (SQLException throwables) {
@@ -67,8 +70,7 @@ public class MusicBandDAO implements IMusicBandDAO {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        finally {
+        } finally {
             DatabaseUtil.closeConnection();
         }
     }
@@ -76,8 +78,13 @@ public class MusicBandDAO implements IMusicBandDAO {
     public void update(MusicBand musicBand, Long id) {
         serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
         musicBand.setId(id);
-        serviceLocator.getDbController().update(musicBand);
+
         try {
+            MusicBand one = serviceLocator.getDbController().findOne(id);
+            if (one.getUserName() != null && !one.getUserName().equals(musicBand.getUserName())) {
+                throw new MusicBandWrongAttributeException("Wrong user");
+            }
+            serviceLocator.getDbController().update(musicBand);
             serviceLocator.getDbController().getConnection().commit();
             updateInCollection(musicBand, id);
         } catch (SQLException throwables) {
@@ -87,8 +94,7 @@ public class MusicBandDAO implements IMusicBandDAO {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-        finally {
+        } finally {
             DatabaseUtil.closeConnection();
         }
     }

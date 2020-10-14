@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 
 public class MusicBand implements Comparable<MusicBand>, Serializable {
     public MusicBand() {
-        this.id = System.currentTimeMillis();
         this.creationDate = LocalDateTime.now();
     }
 

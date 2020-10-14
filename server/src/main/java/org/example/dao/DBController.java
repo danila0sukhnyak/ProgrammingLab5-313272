@@ -66,11 +66,21 @@ public class DBController {
     }
 
     public MusicBand findOne(Long id) throws SQLException {
-        final String sql = "SELECT*FROM music_band WHERE id=?";
+        final String sql = "SELECT ";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setLong(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         return fetch(resultSet);
+    }
+
+    public Long getId() throws SQLException {
+        final String sql = "SELECT NEXTVAL('id_seq')";
+        final PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            return resultSet.getLong("nextval");
+        }
+        return 0L;
     }
 
     public List<MusicBand> findAll() throws SQLException {
@@ -159,8 +169,10 @@ public class DBController {
                     "(NAME           TEXT    NOT NULL, " +
                     " PASS            TEXT     NOT NULL)";
             stmt.executeUpdate(sql);
+            sql = "CREATE SEQUENCE IF NOT EXISTS id_seq START 1;";
+            stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS MUSIC_BAND\n" +
-                    "    (ID bigint NOT NULL,\n" +
+                    "    (ID bigint DEFAULT NEXTVAL('id_seq') NOT NULL,\n" +
                     "    NAME text NOT NULL,\n" +
                     "    COORDINATES_X bigint NOT NULL,\n" +
                     "    COORDINATES_Y double precision NOT NULL,\n" +

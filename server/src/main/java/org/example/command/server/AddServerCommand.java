@@ -30,8 +30,8 @@ public class AddServerCommand extends AbstractServerCommand {
             return "Не хватает аргумента";
         }
         MusicBand musicBand = args.getMusicBand();
-        musicBand.setId(System.currentTimeMillis());
         musicBand.setCreationDate(LocalDateTime.now());
+        musicBand.setUserName(args.getUser().getLogin());
         MusicBandValidator validator = new MusicBandValidator(musicBandDAO);
         try {
             validator.validate(musicBand);

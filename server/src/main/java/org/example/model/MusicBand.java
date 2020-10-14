@@ -144,6 +144,7 @@ public class MusicBand implements Comparable<MusicBand>, Serializable {
                 ", Описание: " + description +
                 ", Жанр: " + genre +
                 ", Солист: " + frontMan +
-                ", Координаты: " + coordinates;
+                ", Координаты: " + coordinates +
+                ", Пользователь: " + userName;
     }
 }

@@ -27,7 +27,7 @@ public class AddIfMinServerCommand extends AbstractServerCommand {
     @Override
     public String execute(Message args) {
         MusicBand musicBand = args.getMusicBand();
-        musicBand.setId(System.currentTimeMillis());
+        musicBand.setUserName(args.getUser().getLogin());
         musicBand.setCreationDate(LocalDateTime.now());
         MusicBandValidator validator = new MusicBandValidator(musicBandDAO);
         try {
