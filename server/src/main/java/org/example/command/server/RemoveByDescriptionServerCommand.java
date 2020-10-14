@@ -24,7 +24,7 @@ public class RemoveByDescriptionServerCommand extends AbstractServerCommand {
         }
         String descr = args.getArgs();
 
-        List<MusicBand> musicBands = musicBandDAO.removeByDescription(descr.trim());
+        List<MusicBand> musicBands = musicBandDAO.removeByDescription(descr.trim(), args.getUser().getLogin());
         if (musicBands.isEmpty()) {
             return "Совпадений не найдено";
         } else {

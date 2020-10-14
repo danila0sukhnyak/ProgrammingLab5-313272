@@ -21,8 +21,8 @@ import java.util.*;
  */
 public class MusicBandDAO implements IMusicBandDAO {
     ServiceLocator serviceLocator;
-    List<MusicBand> musicBandList = new ArrayList<>();
-    Set<String> passportIDUniqueValues = new HashSet<>();
+    List<MusicBand> musicBandList = Collections.synchronizedList(new ArrayList<>());
+    Set<String> passportIDUniqueValues = Collections.synchronizedSet(new HashSet<>());
     LocalDateTime initDate = LocalDateTime.now();
     String type = "ArrayList";
     SortStatus sortStatus = SortStatus.ASC;
@@ -78,7 +78,6 @@ public class MusicBandDAO implements IMusicBandDAO {
     public void update(MusicBand musicBand, Long id) {
         serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
         musicBand.setId(id);
-
         try {
             MusicBand one = serviceLocator.getDbController().findOne(id);
             if (one.getUserName() != null && !one.getUserName().equals(musicBand.getUserName())) {
@@ -114,53 +113,100 @@ public class MusicBandDAO implements IMusicBandDAO {
      */
     public void updateInCollection(MusicBand musicBand, Long id) {
         int number = getNumberById(id);
-        MusicBand oldBand = musicBandList.get(number);
-        Person oldFrontMan = musicBandList.get(number).getFrontMan();
-        String passportID = musicBand.getFrontMan().getPassportID();
-        if (passportID != null &&
-                oldFrontMan != null &&
-                !passportID.equals(oldFrontMan.getPassportID()) &&
-                isPassportIDExists(passportID)) {
-            throw new MusicBandWrongAttributeException("Значение этого поля должно быть уникальным");
-        } else if (passportID != null) {
-            passportIDUniqueValues.add(passportID);
-            clearPassportId(oldBand);
+        synchronized (this) {
+            MusicBand oldBand = musicBandList.get(number);
+            Person oldFrontMan = musicBandList.get(number).getFrontMan();
+            String passportID = musicBand.getFrontMan().getPassportID();
+            if (passportID != null &&
+                    oldFrontMan != null &&
+                    !passportID.equals(oldFrontMan.getPassportID()) &&
+                    isPassportIDExists(passportID)) {
+                throw new MusicBandWrongAttributeException("Значение этого поля должно быть уникальным");
+            } else if (passportID != null) {
+                passportIDUniqueValues.add(passportID);
+                clearPassportId(oldBand);
+            }
+            musicBandList.set(number, musicBand);
         }
-        musicBandList.set(number, musicBand);
     }
 
     @Override
-    public MusicBand removeById(Long id) {
+    public MusicBand removeById(Long id, String userName) {
         int number = getNumberById(id);
-        if (musicBandList.isEmpty() || musicBandList.size() - 1 < number) {
-            return null;
-        } else {
-            MusicBand remove = musicBandList.remove(number);
-            clearPassportId(remove);
-            return remove;
+        synchronized (this) {
+            if (musicBandList.isEmpty() || musicBandList.size() - 1 < number) {
+                return null;
+            } else {
+                MusicBand musicBand = musicBandList.get(number);
+                if (!userName.equals(musicBand.getUserName())) {
+                    return null;
+                }
+                removeByIdInDB(id);
+                MusicBand remove = musicBandList.remove(number);
+                clearPassportId(remove);
+                return remove;
+            }
+        }
+    }
+
+    public void removeByIdInDB(Long id) {
+        serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
+        try {
+            serviceLocator.getDbController().remove(id);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                serviceLocator.getDbController().getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            DatabaseUtil.closeConnection();
         }
     }
 
     @Override
-    public List<MusicBand> removeByDescription(String description) {
+    public List<MusicBand> removeByDescription(String description, String userName) {
         List<MusicBand> removed = new ArrayList<>();
-        Iterator<MusicBand> it = musicBandList.iterator();
-        while (it.hasNext()) {
-            MusicBand musicBand = it.next();
-            if (musicBand != null &&
-                    musicBand.getDescription() != null &&
-                    musicBand.getDescription().equalsIgnoreCase(description)) {
-                removed.add(musicBand);
-                it.remove();
+        synchronized (this) {
+            Iterator<MusicBand> it = musicBandList.iterator();
+            while (it.hasNext()) {
+                MusicBand musicBand = it.next();
+                if (musicBand != null &&
+                        musicBand.getDescription() != null &&
+                        musicBand.getDescription().equalsIgnoreCase(description) &&
+                        userName.equals(musicBand.getUserName())) {
+                    removed.add(musicBand);
+                    removeByIdInDB(musicBand.getId());
+                    it.remove();
+                }
             }
         }
         return removed;
     }
 
     @Override
-    public void clear() {
-        musicBandList.clear();
-        passportIDUniqueValues.clear();
+    public void clear(String userName) {
+        serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
+        try {
+            serviceLocator.getDbController().clear(userName);
+            musicBandList.clear();
+            passportIDUniqueValues.clear();
+            List<MusicBand> all = serviceLocator.getDbController().findAll();
+            DataStorage dataStorage = new DataStorage();
+            dataStorage.setBands(all);
+            init(dataStorage);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            try {
+                serviceLocator.getDbController().getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            DatabaseUtil.closeConnection();
+        }
+
     }
 
     @Override

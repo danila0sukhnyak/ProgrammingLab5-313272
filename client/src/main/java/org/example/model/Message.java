@@ -95,6 +95,9 @@ public class Message implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+        if (musicBand != null) {
+            musicBand.setUserName(user.getLogin());
+        }
     }
 
     @Override

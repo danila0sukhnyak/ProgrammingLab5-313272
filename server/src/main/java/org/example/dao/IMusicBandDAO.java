@@ -17,7 +17,7 @@ public interface IMusicBandDAO {
 
     void update(MusicBand musicBand, Long id);
 
-    void clear();
+    void clear(String userName);
 
     boolean isPassportIDExists(String passportID);
 
@@ -39,9 +39,9 @@ public interface IMusicBandDAO {
 
     MusicBand removeLast();
 
-    MusicBand removeById(Long id);
+    MusicBand removeById(Long id, String userName);
 
-    List<MusicBand> removeByDescription(String description);
+    List<MusicBand> removeByDescription(String description, String userName);
 
     SortStatus reorder();
 

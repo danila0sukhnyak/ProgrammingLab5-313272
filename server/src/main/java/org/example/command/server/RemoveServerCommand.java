@@ -26,7 +26,7 @@ public class RemoveServerCommand extends AbstractServerCommand {
         } catch (NumberFormatException e) {
             return "Неверный формат аргумента";
         }
-        MusicBand musicBand = musicBandDAO.removeById(id);
+        MusicBand musicBand = musicBandDAO.removeById(id, args.getUser().getLogin());
         if (musicBand == null) {
             return "Элемент не найден";
         } else {

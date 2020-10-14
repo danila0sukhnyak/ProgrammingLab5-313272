@@ -54,8 +54,8 @@ public class Bootstrap implements ServiceLocator {
 
     private void initDB() {
         dbController.setConnection(DatabaseUtil.getConnection());
-        dbController.createTable();
         try {
+            dbController.createTable();
             List<MusicBand> all = dbController.findAll();
             DataStorage dataStorage = new DataStorage();
             dataStorage.setBands(all);
