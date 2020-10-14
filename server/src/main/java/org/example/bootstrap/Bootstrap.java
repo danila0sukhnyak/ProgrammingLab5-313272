@@ -1,13 +1,16 @@
 package org.example.bootstrap;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.example.command.server.*;
 import org.example.controller.ServerController;
 import org.example.dao.DBController;
 import org.example.dao.IMusicBandDAO;
 import org.example.dao.MusicBandDAO;
+import org.example.enums.AuthState;
 import org.example.model.DataStorage;
 import org.example.model.Message;
 import org.example.model.MusicBand;
+import org.example.model.User;
 import org.example.service.ConsoleService;
 import org.example.service.FileService;
 import org.example.service.IConsoleService;
@@ -73,6 +76,26 @@ public class Bootstrap implements ServiceLocator {
         }
     }
 
+
+    public String auth(User user) {
+        DBController dbController = getDbController();
+        try {
+            dbController.setConnection(DatabaseUtil.getConnection());
+            User foundUser = dbController.findByName(user.getLogin());
+            if (foundUser == null) {
+                return "Пользователя не существует";
+            }
+            if (!foundUser.getPassword().equals(DigestUtils.md2Hex(user.getPassword()))) {
+                return "Неверный пароль";
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return "Ошибка на сервере";
+        } finally {
+            DatabaseUtil.closeConnection();
+        }
+        return AuthState.AUTH_SUCCESS.name();
+    }
 
     public void executeCommands(ArrayList<String> lines) {
         isEx = true;

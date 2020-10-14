@@ -3,6 +3,7 @@ package org.example.bootstrap;
 import org.example.command.server.AbstractServerCommand;
 import org.example.dao.DBController;
 import org.example.dao.IMusicBandDAO;
+import org.example.model.User;
 import org.example.service.IConsoleService;
 import org.example.service.IFileService;
 
@@ -21,4 +22,6 @@ public interface ServiceLocator {
     Map<String, AbstractServerCommand> getCommands();
 
     void executeCommands(ArrayList<String> line);
+
+    String auth(User user);
 }
