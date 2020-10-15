@@ -1,5 +1,6 @@
 package org.example.command.server;
 
+import org.example.exception.MusicBandWrongAttributeException;
 import org.example.model.Message;
 import org.example.model.MusicBand;
 import org.example.util.MusicBandValidator;
@@ -35,7 +36,11 @@ public class AddServerCommand extends AbstractServerCommand {
         MusicBandValidator validator = new MusicBandValidator(musicBandDAO);
         try {
             validator.validate(musicBand);
-        } catch (Exception e) {
+        }
+        catch (MusicBandWrongAttributeException e){
+            return "Не прошла валидация на сервере. PasportID должен быть уникальным";
+        }
+        catch (Exception e) {
             return "Не прошла валидация на сервере";
         }
         musicBandDAO.save(musicBand);
