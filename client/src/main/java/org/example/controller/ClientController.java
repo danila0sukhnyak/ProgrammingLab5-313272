@@ -9,6 +9,7 @@ import org.example.util.UserHolder;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -55,7 +56,7 @@ public class ClientController {
                                 try {
                                     if (WriteThread(selector, key, client)) continue;
                                     if (ReadThread(selector, key, client)) continue;
-                                } catch (StreamCorruptedException e) {
+                                } catch (StreamCorruptedException | SocketException e) {
                                     selector = tryReconnect(selector);
                                 } catch (IOException | NoSuchElementException e) {
                                     System.out.println("Завершение работы.");
