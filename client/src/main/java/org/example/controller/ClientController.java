@@ -61,7 +61,7 @@ public class ClientController {
                                 } catch (IOException | NoSuchElementException e) {
                                     System.out.println("Завершение работы.");
                                     client.close();
-                                    e.printStackTrace();
+                                    //e.printStackTrace();
                                     System.exit(0);
                                 }
                             }

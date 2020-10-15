@@ -68,7 +68,7 @@ public class FileService implements IFileService {
             consoleService.printLn("Файл не найден");
         } catch (IOException e) {
             consoleService.printLn("Ошибка при чтении файла");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }

@@ -40,12 +40,6 @@ public class Bootstrap implements ServiceLocator {
      */
 
     public void start(String[] args) {
-        if (args != null && args.length > 0) {
-            initCollection(args[0]);
-
-        } else {
-            consoleService.printLn("Отсутвует аргумент с адресом файла, коллекция не загружена");
-        }
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
         initCommands();
         initDB();

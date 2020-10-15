@@ -28,7 +28,7 @@ public class RemoveServerCommand extends AbstractServerCommand {
         }
         MusicBand musicBand = musicBandDAO.removeById(id, args.getUser().getLogin());
         if (musicBand == null) {
-            return "Элемент не найден";
+            return "Элемент не найден. Либо у вас нет доступа.";
         } else {
             return "Элемент успешно удален";
         }

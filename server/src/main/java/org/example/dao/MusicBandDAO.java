@@ -201,7 +201,7 @@ public class MusicBandDAO implements IMusicBandDAO {
             try {
                 serviceLocator.getDbController().getConnection().rollback();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         } finally {
             DatabaseUtil.closeConnection();

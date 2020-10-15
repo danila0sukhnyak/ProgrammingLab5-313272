@@ -14,7 +14,7 @@ public class DatabaseUtil {
         try {
             properties.load(DatabaseUtil.class.getResourceAsStream("/jdbc.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -39,7 +39,7 @@ public class DatabaseUtil {
                 connection.close();
             connection = null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

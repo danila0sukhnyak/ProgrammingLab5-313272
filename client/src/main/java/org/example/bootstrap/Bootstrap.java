@@ -5,6 +5,7 @@ import org.example.command.server.AbstractServerCommand;
 import org.example.controller.ClientController;
 import org.example.dao.IMusicBandDAO;
 import org.example.exception.InterruptApplicationException;
+import org.example.exception.MusicBandWrongAttributeException;
 import org.example.model.Message;
 import org.example.service.ConsoleService;
 import org.example.service.IConsoleService;
@@ -47,10 +48,12 @@ public class Bootstrap implements ServiceLocator {
             } else {
                 try {
                     return commands.get(command).execute(params);
-                } catch (InterruptApplicationException e) {
+                }
+                catch (MusicBandWrongAttributeException ignored){ }
+                catch (InterruptApplicationException e) {
                     throw e;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }
@@ -80,7 +83,7 @@ public class Bootstrap implements ServiceLocator {
                     try {
                         messages.addAll(commands.get(command).execute(params));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                       //e.printStackTrace();
                     }
                 }
             }

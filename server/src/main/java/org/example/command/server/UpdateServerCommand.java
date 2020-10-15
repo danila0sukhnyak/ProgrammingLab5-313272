@@ -2,6 +2,7 @@ package org.example.command.server;
 
 import org.example.exception.InterruptInputException;
 import org.example.exception.MusicBandNotFoundException;
+import org.example.exception.MusicBandWrongAttributeException;
 import org.example.model.Message;
 import org.example.model.MusicBand;
 import org.example.util.MusicBandValidator;
@@ -34,7 +35,11 @@ public class UpdateServerCommand extends AbstractServerCommand {
             MusicBandValidator validator = new MusicBandValidator(musicBandDAO);
             validator.validateUpdate(musicBand, args.getMusicBand());
             musicBandDAO.update(args.getMusicBand(), id);
-        } catch (InterruptInputException e) {
+        } catch (MusicBandWrongAttributeException e){
+            if (e.getMessage().equals("Wrong user")) return "У вас нет доступа";
+            else return e.getMessage();
+        }
+        catch (InterruptInputException e) {
             return "Обновление элемента прервано";
         } catch (MusicBandNotFoundException e) {
             return "Такого элемента нет";
