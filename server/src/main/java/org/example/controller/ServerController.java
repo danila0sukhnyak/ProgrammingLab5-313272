@@ -13,10 +13,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -54,15 +51,16 @@ public class ServerController {
 
             StringBuilder console_line = new StringBuilder();
             while (true) {
-                console_line = CheckCommands(console_line);
                 selector.select();
                 iterator = selector.selectedKeys().iterator();
                 ExecutorService executorService = Executors.newFixedThreadPool(9);
                 while (iterator.hasNext()) {
                     SelectionKey key = iterator.next();
                     iterator.remove();
-
                     if (selector.isOpen()) {
+                        Thread commandLineChecker = new Thread(new CommandLineChecker());
+                        commandLineChecker.setDaemon(true);
+                        commandLineChecker.start();
                         Thread connector = new Thread(new Connector(key));
                         connector.setDaemon(true);
                         connector.start();
@@ -86,26 +84,6 @@ public class ServerController {
         }
     }
 
-    private StringBuilder CheckCommands(StringBuilder console_line) throws IOException {
-        if (System.in.available() > 0) {
-            int ch = 0;
-            while (true) {
-                ch = System.in.read();
-                if (ch == 10) {
-                    break;
-                } else {
-                    console_line.append((char) ch);
-                }
-            }
-            server_commands(console_line.toString());
-            console_line = new StringBuilder();
-        }
-        return console_line;
-    }
-
-    private boolean CheckKey(SelectionKey key) {
-        return !key.isValid();
-    }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
         ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
@@ -125,12 +103,6 @@ public class ServerController {
         client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
     }
 
-    private void server_commands(String s) {
-        if (s.equals("exit")) {
-            System.out.println("Выход из программы");
-            System.exit(0);
-        }
-    }
 
     static class Writer implements Runnable {
         SelectionKey key;
@@ -250,6 +222,24 @@ public class ServerController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    static class CommandLineChecker implements Runnable {
+        Scanner scanner = new Scanner(System.in);
+
+        @Override
+        public void run() {
+            while (scanner.hasNext()) {
+                server_commands(scanner.nextLine());
+            }
+        }
+
+        private static void server_commands(String s) {
+            if (s.equals("exit")) {
+                System.out.println("Выход из программы");
+                System.exit(0);
             }
         }
     }

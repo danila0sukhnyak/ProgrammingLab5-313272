@@ -1,10 +1,7 @@
 package org.example.command;
 
 import org.example.command.server.AbstractServerCommand;
-import org.example.exception.InterruptApplicationException;
 import org.example.model.Message;
-
-import java.util.LinkedList;
 import java.util.Queue;
 
 public class ExitCommand extends AbstractCommand {
