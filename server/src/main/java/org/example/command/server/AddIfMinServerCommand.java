@@ -24,9 +24,10 @@ public class AddIfMinServerCommand extends AbstractServerCommand {
      * и добавляет его в коллекцию, если он самый меньший в коллекций или она пуста
      *
      * @param args аргументы
+     * @return
      */
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         MusicBand musicBand = args.getMusicBand();
         musicBand.setUserName(args.getUser().getLogin());
         musicBand.setCreationDate(LocalDateTime.now());
@@ -35,17 +36,17 @@ public class AddIfMinServerCommand extends AbstractServerCommand {
             validator.validate(musicBand);
         }
         catch (MusicBandWrongAttributeException e){
-            return "Не прошла валидация на сервере. PasportID должен быть уникальным";
+            return new Message("Не прошла валидация на сервере. PasportID должен быть уникальным");
         }
         catch (Exception e) {
-            return "Не прошла валидация на сервере";
+            return new Message("Не прошла валидация на сервере");
         }
         MusicBand minimal = musicBandDAO.getMinimal();
         if (minimal == null || musicBand.compareTo(minimal) < 0) {
             musicBandDAO.save(musicBand);
-            return "Элемент успешно добавлен!";
+            return new Message("Элемент успешно добавлен!");
         } else {
-            return "Введенный элемент больше минимального";
+            return new Message("Введенный элемент больше минимального");
         }
     }
 }

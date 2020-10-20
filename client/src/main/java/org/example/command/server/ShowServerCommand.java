@@ -18,17 +18,12 @@ public class ShowServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         List<MusicBand> all = musicBandDAO.getAll();
         if (all.isEmpty()) {
-            return "Коллекция пустая";
+            return new Message("Коллекция пустая");
         } else {
-            String output = "";
-            for (MusicBand musicBand : all) {
-                if (musicBand != null)
-                    output = output.concat(musicBand.toString()).concat(System.lineSeparator());
-            }
-            return output;
+            return new Message(all);
         }
     }
 }

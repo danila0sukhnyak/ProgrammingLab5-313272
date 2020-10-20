@@ -16,12 +16,12 @@ public class RemoveLastServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         MusicBand musicBand = musicBandDAO.removeLast();
         if (musicBand == null) {
-            return "Коллекция пустая";
+            return new Message("Коллекция пустая");
         } else {
-            return "Удален элемент с id = " + musicBand.getId();
+            return new Message("Удален элемент с id = " + musicBand.getId());
         }
     }
 }

@@ -16,8 +16,8 @@ public class InfoServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         DataStorage data = musicBandDAO.getData();
-        return data.toString();
+        return new Message(data.toString());
     }
 }

@@ -2,12 +2,14 @@ package org.example.util;
 
 import org.example.model.User;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Класс хранящий данные пользователя {@link User}.
  */
 public class UserHolder {
 
-    private static final ThreadLocal<User> userContext = new ThreadLocal<>();
+    private static final AtomicReference<User> userContext = new AtomicReference<>();
 
     public static User getUser() {
         User context = userContext.get();

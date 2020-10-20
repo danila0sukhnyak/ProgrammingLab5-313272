@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<!--suppress ALL -->
+
+<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.Controllers.MapController">
+   <children>
+      <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
+         <children>
+            <AnchorPane fx:id="objects" layoutX="433.0" layoutY="50.0" maxHeight="500.0" maxWidth="717.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="717.0" style="-fx-background-color: #93EFDE#93EFDE; -fx-background-radius: 10;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <Line fx:id="line_x" endX="361.0" layoutX="369.0" layoutY="215.0" startX="-339.0" AnchorPane.bottomAnchor="215.5" AnchorPane.leftAnchor="29.5" AnchorPane.rightAnchor="29.5" AnchorPane.topAnchor="214.5" />
+                  <Line fx:id="line_y" endX="-100.0" endY="381.0" layoutX="480.0" layoutY="28.0" startX="-100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="379.5" AnchorPane.rightAnchor="379.5" AnchorPane.topAnchor="20.0" />
+                  <Text layoutX="706.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.bottomAnchor="187.185546875" AnchorPane.rightAnchor="41.994140625">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="353.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" AnchorPane.leftAnchor="353.0" AnchorPane.topAnchor="26.705078125">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+                  <Circle fx:id="circle" fill="DODGERBLUE" layoutX="41.0" layoutY="38.0" radius="41.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                  <Polygon fx:id="triangle" fill="DODGERBLUE" layoutX="32.0" layoutY="29.0" points="-32.0, 40.0, 50.0, 40.0, 9.0, -35.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                  <Rectangle fx:id="square" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" layoutY="-3.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="82.0" />
+                  <Circle fx:id="user_color" fill="DODGERBLUE" layoutX="41.0" layoutY="40.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" />
+               </children>
+            </AnchorPane>
+         </children></AnchorPane>
+      <AnchorPane layoutX="300.0" layoutY="14.0" prefHeight="36.0" prefWidth="194.0" style="-fx-background-color: #ddfff8; -fx-background-radius: 10;" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="14.0">
+         <children>
+            <Text fx:id="name" fill="#8a8a8a" layoutY="25.10546875" stroke="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="USER" textAlignment="CENTER" wrappingWidth="193.9999884366989" AnchorPane.bottomAnchor="6.65625" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.1563301086425781E-5" AnchorPane.topAnchor="7.0">
+               <font>
+                  <Font name="Arial" size="20.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <Text fill="WHITE" layoutX="14.0" layoutY="41.158203125" strokeType="OUTSIDE" strokeWidth="0.0" text="ClientFX" wrappingWidth="138.990234375" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font name="Arial" size="30.0" />
+         </font>
+      </Text>
+      <Text fx:id="version_text" fill="#747474" layoutX="134.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1.0" wrappingWidth="22.136703491210938" AnchorPane.leftAnchor="132.0" AnchorPane.topAnchor="33.0">
+         <font>
+            <Font name="Arial Bold" size="10.0" />
+         </font>
+      </Text>
+      <Button fx:id="table_button" layoutX="538.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#table" opacity="0.88" prefHeight="34.0" prefWidth="98.0" style="-fx-background-color: #fafafa;" text="TABLE" textAlignment="CENTER" AnchorPane.rightAnchor="164.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font name="Arial" size="17.0" />
+         </font>
+      </Button>
+      <Button fx:id="theme_button" layoutX="693.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#change_theme" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: #53AC9A;" textAlignment="CENTER" AnchorPane.rightAnchor="114.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="leave_button" layoutX="743.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#leave" opacity="0.88" prefHeight="34.0" prefWidth="11.0" style="-fx-background-color: #ff0000; -fx-background-radius: 5;" text="&gt;" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Button fx:id="exit_button" layoutX="743.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#exit" opacity="0.88" prefHeight="34.0" prefWidth="11.0" style="-fx-background-color: #ff0000; -fx-background-radius: 5;" text="X" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Button fx:id="language_button" layoutX="694.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#change_language" opacity="0.88" prefHeight="34.0" prefWidth="43.0" style="-fx-background-color: silver;" text="EN" textAlignment="CENTER" AnchorPane.rightAnchor="64.0" AnchorPane.topAnchor="14.0">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

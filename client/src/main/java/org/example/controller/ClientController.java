@@ -1,8 +1,9 @@
 package org.example.controller;
 
 import org.example.bootstrap.ServiceLocator;
-import org.example.enums.AuthState;
+import org.example.command.server.ShowServerCommand;
 import org.example.model.Message;
+import org.example.model.MusicBand;
 import org.example.model.User;
 import org.example.util.UserHolder;
 
@@ -14,17 +15,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientController {
     private static final int BUFF_SIZE = 1000000;
     String hostname;
     int port;
     ServiceLocator serviceLocator;
-    private Queue<Message> messages = new LinkedList<>();
+    private static Queue<Message> messages = new LinkedList<>();
+    private static Queue<Message> answers = new LinkedList<>();
     private Scanner scanner = new Scanner(System.in);
     private User user = null;
 
@@ -104,12 +103,13 @@ public class ClientController {
     private boolean WriteThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException {
         if ((key.interestOps() & SelectionKey.OP_WRITE) != 0) {
             if (messages.isEmpty()) {
-                fillMessagesQueue();
+                return false;
             }
             Message message = messages.poll();
             if (message != null) {
                 user = message.getUser();
-                if (!"register".equals(message.getCommand().command())) {
+                if (!"auth".equals(message.getCommand().command()) &&
+                        !"register".equals(message.getCommand().command())) {
                     message.setUser(UserHolder.getUser());
                 }
                 sendSocketObject(client, message);
@@ -124,12 +124,8 @@ public class ClientController {
     private boolean ReadThread(Selector selector, SelectionKey key, SocketChannel client) throws IOException, ClassNotFoundException {
         if ((key.interestOps() & SelectionKey.OP_READ) != 0) {
             Message message = getSocketObject(client);
-            if (message.getString().equals(AuthState.AUTH_SUCCESS.name())) {
-               UserHolder.setUser(user);
-                System.out.println("Успешная авторизация");
-            } else {
-                System.out.println(message.getString());
-            }
+            System.out.println("read: " + message);
+            answers.add(message);
             key.interestOps(SelectionKey.OP_WRITE);
             client.register(selector, SelectionKey.OP_WRITE);
             return true;
@@ -137,15 +133,15 @@ public class ClientController {
         return false;
     }
 
-    private void fillMessagesQueue() {
-        System.out.print(">");
-        if (scanner.hasNextLine()) {
-            messages = serviceLocator.executeCommands(scanner.nextLine());
-        } else {
-            System.out.println("Завершение работы");
-            System.exit(0);
-        }
-    }
+//    private void fillMessagesQueue() {
+//        System.out.print(">");
+//        if (scanner.hasNextLine()) {
+//            messages = serviceLocator.executeCommands(scanner.nextLine());
+//        } else {
+//            System.out.println("Завершение работы");
+//            System.exit(0);
+//        }
+//    }
 
     public static Message getSocketObject(SocketChannel socketChannel) throws IOException, ClassNotFoundException {
         ByteBuffer data = ByteBuffer.allocate(BUFF_SIZE);
@@ -156,10 +152,41 @@ public class ClientController {
     }
 
     private static void sendSocketObject(SocketChannel client, Message message) throws IOException {
+        System.out.println("send: " + message);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(message);
         objectOutputStream.flush();
         client.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
+    }
+
+    public static String sendMessage(Message message) {
+        messages.add(message);
+        for (int i = 0; i < 10; i++) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!answers.isEmpty()) {
+                return answers.poll().getString();
+            }
+        }
+        return "Нет ответа от сервера епт";
+    }
+
+    public static List<MusicBand> getData() {
+        messages.add(new Message(new ShowServerCommand()));
+        for (int i = 0; i < 10; i++) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!answers.isEmpty()) {
+                return answers.poll().getBandList();
+            }
+        }
+        return Collections.emptyList();
     }
 }

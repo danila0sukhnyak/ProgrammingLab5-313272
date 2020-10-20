@@ -49,5 +49,5 @@ public abstract class AbstractServerCommand implements Serializable {
      * @param args аргументы
      * @throws Exception ошибки при выполнении комманды
      */
-    public abstract String execute(Message args) throws Exception;
+    public abstract Message execute(Message args) throws Exception;
 }

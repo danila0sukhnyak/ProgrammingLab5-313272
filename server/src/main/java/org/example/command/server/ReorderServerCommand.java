@@ -16,15 +16,15 @@ public class ReorderServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         SortStatus reorder = musicBandDAO.reorder();
         switch (reorder) {
             case ASC:
-                return "Коллекция отсортирована по возрастанию";
+                return new Message("Коллекция отсортирована по возрастанию");
             case DESC:
-                return "Коллекция отсортирована по убыванию";
+                return new Message("Коллекция отсортирована по убыванию");
             default:
-                return "";
+                return new Message("");
         }
     }
 }

@@ -15,11 +15,11 @@ public class HelpServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         String output = "";
         for (AbstractServerCommand value : commands.values()) {
             output = output.concat(value.command() + " : " + value.description()).concat(System.lineSeparator());
         }
-        return output;
+        return new Message(output);
     }
 }

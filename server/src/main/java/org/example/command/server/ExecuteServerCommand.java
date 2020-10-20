@@ -30,11 +30,12 @@ public class ExecuteServerCommand extends AbstractServerCommand {
      * устанавливает в {@link IConsoleService} консольный поток {@code System.in}
      *
      * @param args аргументы (1 - путь к файлу со скриптом)
+     * @return
      */
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         if (args.getArgs() == null) {
-            return "Не хватает аргумента";
+            return new Message("Не хватает аргумента");
         }
 
         try {
@@ -50,9 +51,9 @@ public class ExecuteServerCommand extends AbstractServerCommand {
             }
             serviceLocator.executeCommands(lines);
             Bootstrap.execute_script_check.remove("execute_script " + args.getArgs());
-            return ("***Выполнение скрипта завершено: " + args.getArgs() + "***");
+            return new Message("***Выполнение скрипта завершено: " + args.getArgs() + "***");
         } catch (IOException e) {
-            return "Ошибка при чтении файла скрипта";
+            return new Message("Ошибка при чтении файла скрипта");
         } finally {
             consoleService.setSystemIn();
         }

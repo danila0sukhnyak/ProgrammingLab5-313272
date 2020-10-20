@@ -15,8 +15,8 @@ public class ClearServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         musicBandDAO.clear(args.getUser().getLogin());
-        return "Коллекция очищена";
+        return new Message("Коллекция очищена");
     }
 }

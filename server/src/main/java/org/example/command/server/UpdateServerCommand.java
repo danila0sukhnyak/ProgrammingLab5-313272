@@ -20,15 +20,15 @@ public class UpdateServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         if (args.getArgs() == null) {
-            return "Не хватает аргумента";
+            return new Message("Не хватает аргумента");
         }
         Long id;
         try {
             id = Long.valueOf(args.getArgs());
         } catch (NumberFormatException e) {
-            return "Неверный формат аргумента";
+            return new Message("Неверный формат аргумента");
         }
         try {
             MusicBand musicBand = musicBandDAO.getById(id);
@@ -36,14 +36,14 @@ public class UpdateServerCommand extends AbstractServerCommand {
             validator.validateUpdate(musicBand, args.getMusicBand());
             musicBandDAO.update(args.getMusicBand(), id);
         } catch (MusicBandWrongAttributeException e){
-            if (e.getMessage().equals("Wrong user")) return "У вас нет доступа";
-            else return e.getMessage();
+            if (e.getMessage().equals("Wrong user")) return new Message("У вас нет доступа");
+            else return new Message(e.getMessage());
         }
         catch (InterruptInputException e) {
-            return "Обновление элемента прервано";
+            return new Message("Обновление элемента прервано");
         } catch (MusicBandNotFoundException e) {
-            return "Такого элемента нет";
+            return new Message("Такого элемента нет");
         }
-        return "Элемент успешно обновлен!";
+        return new Message("Элемент успешно обновлен!");
     }
 }

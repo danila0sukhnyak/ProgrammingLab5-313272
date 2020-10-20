@@ -4,6 +4,7 @@ import org.example.command.server.AbstractServerCommand;
 
 import java.io.Serializable;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 33L;
@@ -13,6 +14,7 @@ public class Message implements Serializable {
     private String args;
     private MusicBand musicBand;
     private User user;
+    private List<MusicBand> bandList;
 
     public Message(String string) {
         this.string = string;
@@ -26,6 +28,10 @@ public class Message implements Serializable {
     public Message(AbstractServerCommand serverCommand, User user) {
         this.command = serverCommand;
         this.user = user;
+    }
+
+    public Message(List<MusicBand> all) {
+        this.bandList = all;
     }
 
     public MusicBand getMusicBand() {
@@ -95,16 +101,31 @@ public class Message implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+        if (musicBand != null) {
+            musicBand.setUserName(user.getLogin());
+        }
+    }
+
+    public List<MusicBand> getBandList() {
+        return bandList;
+    }
+
+    public void setBandList(List<MusicBand> bandList) {
+        this.bandList = bandList;
+    }
+
+    public void setMusicBand(MusicBand musicBand) {
+        this.musicBand = musicBand;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "socketChannel=" + socketChannel +
                 ", string='" + string + '\'' +
                 ", command=" + command +
                 ", args='" + args + '\'' +
                 ", musicBand=" + musicBand +
+                ", user=" + user +
                 '}';
     }
 }

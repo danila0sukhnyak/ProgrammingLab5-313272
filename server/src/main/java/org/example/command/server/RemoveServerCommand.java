@@ -16,21 +16,21 @@ public class RemoveServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         if (args.getArgs() == null) {
-            return "Не хватает аргумента";
+            return new Message("Не хватает аргумента");
         }
         Long id;
         try {
             id = Long.valueOf(args.getArgs());
         } catch (NumberFormatException e) {
-            return "Неверный формат аргумента";
+            return new Message("Неверный формат аргумента");
         }
         MusicBand musicBand = musicBandDAO.removeById(id, args.getUser().getLogin());
         if (musicBand == null) {
-            return "Элемент не найден. Либо у вас нет доступа.";
+            return new Message("Элемент не найден. Либо у вас нет доступа.");
         } else {
-            return "Элемент успешно удален";
+            return new Message("Элемент успешно удален");
         }
     }
 }

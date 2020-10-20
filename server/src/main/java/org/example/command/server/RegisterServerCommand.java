@@ -26,16 +26,17 @@ public class RegisterServerCommand extends AbstractServerCommand {
      * и добавляет его в коллекцию
      *
      * @param args аргументы
+     * @return
      */
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         DBController dbController = serviceLocator.getDbController();
         User user = args.getUser();
         try {
             dbController.setConnection(DatabaseUtil.getConnection());
             User foundUser = dbController.findByName(user.getLogin());
             if (foundUser != null) {
-                return "Пользователь уже существует";
+                return new Message("Пользователь уже существует");
             }
             String password = user.getPassword();
             if (password != null) {
@@ -50,10 +51,10 @@ public class RegisterServerCommand extends AbstractServerCommand {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            return "Ошибка на сервере";
+            return new Message("Ошибка на сервере");
         } finally {
             DatabaseUtil.closeConnection();
         }
-        return "Успешная регистрация";
+        return new Message("Успешная регистрация");
     }
 }

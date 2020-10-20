@@ -24,23 +24,27 @@ public class AddServerCommand extends AbstractServerCommand {
      * и добавляет его в коллекцию
      *
      * @param args аргументы
+     * @return
      */
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
+        if (args.getMusicBand() == null){
+            return new Message("Не хватает аргумента");
+        }
         MusicBand musicBand = args.getMusicBand();
-        musicBand.setId(System.currentTimeMillis());
         musicBand.setCreationDate(LocalDateTime.now());
+        musicBand.setUserName(args.getUser().getLogin());
         MusicBandValidator validator = new MusicBandValidator(musicBandDAO);
         try {
             validator.validate(musicBand);
         }
         catch (MusicBandWrongAttributeException e){
-            return "Не прошла валидация на сервере. PasportID должен быть уникальным";
+            return new Message("Не прошла валидация на сервере. PasportID должен быть уникальным");
         }
         catch (Exception e) {
-            return "Не прошла валидация на сервере";
+            return new Message("Не прошла валидация на сервере");
         }
         musicBandDAO.save(musicBand);
-        return "Элемент успешно добавлен!";
+        return new Message("Элемент успешно добавлен!");
     }
 }

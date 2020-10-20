@@ -1,7 +1,6 @@
 package org.example.command.server;
 
 import org.example.model.Message;
-import org.example.model.MusicBand;
 
 public class RemoveServerCommand extends AbstractServerCommand {
 
@@ -16,21 +15,7 @@ public class RemoveServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
-        if (args.getArgs() == null) {
-            return "Не хватает аргумента";
-        }
-        Long id;
-        try {
-            id = Long.valueOf(args.getArgs());
-        } catch (NumberFormatException e) {
-            return "Неверный формат аргумента";
-        }
-        MusicBand musicBand = musicBandDAO.removeById(id);
-        if (musicBand == null) {
-            return "Элемент не найден";
-        } else {
-            return "Элемент успешно удален";
-        }
+    public Message execute(Message args) {
+        return null;
     }
 }

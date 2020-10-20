@@ -16,12 +16,13 @@ import java.util.*;
 /**
  * Класс-загрузчик, используется для старта приложения и доступа к необходимым сервисам.
  */
-public class Bootstrap implements ServiceLocator {
+public class Bootstrap implements ServiceLocator, Runnable{
     private IConsoleService consoleService = new ConsoleService();
     private Map<String, AbstractCommand> commands = new HashMap<>();
+    public static ClientController clientController;
     public static ArrayList<String> execute_script_check = new ArrayList<>();
     public static boolean isEx = false;
-
+    public String[] args;
     /**
      * Запускает приложение
      *
@@ -30,8 +31,7 @@ public class Bootstrap implements ServiceLocator {
     public void start(String[] args) {
         initCommands();
         consoleService.printLn("***WELCOME TO MUSIC BAND COLLECTION***");
-
-        ClientController clientController = new ClientController("127.0.0.1", "27015", this);
+        clientController = new ClientController("127.0.0.1", "27015", this);
         clientController.run();
         System.out.println("Завершение работы");
         System.exit(0);
@@ -138,5 +138,18 @@ public class Bootstrap implements ServiceLocator {
 
     public void setCommands(Map<String, AbstractCommand> commands) {
         this.commands = commands;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    @Override
+    public void run() {
+        start(args);
     }
 }

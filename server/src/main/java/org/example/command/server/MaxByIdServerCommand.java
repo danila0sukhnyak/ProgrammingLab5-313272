@@ -16,12 +16,12 @@ public class MaxByIdServerCommand extends AbstractServerCommand {
     }
 
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         MusicBand maxId = musicBandDAO.getByMaxId();
         if (maxId == null) {
-            return "Коллекция пустая";
+            return new Message("Коллекция пустая");
         } else {
-            return maxId.toString();
+            return new Message(maxId.toString());
         }
     }
 }

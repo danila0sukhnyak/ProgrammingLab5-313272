@@ -27,26 +27,27 @@ public class AuthServerCommand extends AbstractServerCommand {
      * и добавляет его в коллекцию
      *
      * @param args аргументы
+     * @return
      */
     @Override
-    public String execute(Message args) {
+    public Message execute(Message args) {
         DBController dbController = serviceLocator.getDbController();
         User user = args.getUser();
         try {
             dbController.setConnection(DatabaseUtil.getConnection());
             User foundUser = dbController.findByName(user.getLogin());
             if (foundUser == null) {
-                return "Пользователя не существует";
+                return new Message("Пользователя не существует");
             }
             if (!foundUser.getPassword().equals(DigestUtils.md2Hex(user.getPassword()))) {
-                return "Неверный пароль";
+                return new Message("Неверный пароль");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            return "Ошибка на сервере";
+            return new Message("Ошибка на сервере");
         } finally {
             DatabaseUtil.closeConnection();
         }
-        return AuthState.AUTH_SUCCESS.name();
+        return new Message(AuthState.AUTH_SUCCESS.name());
     }
 }

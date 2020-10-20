@@ -125,6 +125,7 @@ public class ServerController {
                     for (Message mes : outcomingMessages) {
                         if (mes.getSocketChannel().equals(channel)) {
                             try {
+                                System.out.println("write: "+mes);
                                 sendSocketObject(channel, mes);
                                 outcomingMessages.remove(mes);
                                 channel.register(selector, SelectionKey.OP_READ);
@@ -149,14 +150,14 @@ public class ServerController {
 
         @Override
         public void run() {
-            String result = "Неизвестная команда";
+            Message result = new Message("Неизвестная команда");
             synchronized (incomingMessages) {
                 for (Message mes : incomingMessages) {
                     AbstractServerCommand command = mes.getCommand();
                     if (command != null) {
                         String auth = serviceLocator.auth(mes.getUser());
                         if (!AuthState.AUTH_SUCCESS.name().equals(auth) && !command.command().equals("register")) {
-                            result = "Ошибка авторизации";
+                            result = new Message("Ошибка авторизации");
                         } else {
                             command.init(serviceLocator);
                             try {
@@ -166,13 +167,13 @@ public class ServerController {
                             }
                         }
                     }
-                    Message message = new Message(result);
-                    message.setSocketChannel(mes.getSocketChannel());
+
+                    result.setSocketChannel(mes.getSocketChannel());
                     synchronized (incomingMessages) {
                         incomingMessages.remove(mes);
                     }
                     synchronized (outcomingMessages) {
-                        outcomingMessages.add(message);
+                        outcomingMessages.add(result);
                     }
                 }
             }
@@ -193,6 +194,7 @@ public class ServerController {
                 try {
                     synchronized (incomingMessages) {
                         Message message = getSocketObject(channel);
+                        System.out.println("read: "+message);
                         message.setSocketChannel(channel);
                         incomingMessages.add(message);
                         channel.register(selector, SelectionKey.OP_WRITE);
