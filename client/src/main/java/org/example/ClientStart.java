@@ -73,15 +73,9 @@ public class ClientStart extends Application {
                 ClientStart.language = "ru_RU";
                 break;
             case "ru_RU":
-                ClientStart.language = "mk";
+                ClientStart.language = "sl_SL";
                 break;
-            case "mk":
-                ClientStart.language = "fr";
-                break;
-            case "fr":
-                ClientStart.language = "sp_HD";
-                break;
-            case "sp_HD":
+            case "sl_SL":
                 ClientStart.language = "en_US";
                 break;
         }

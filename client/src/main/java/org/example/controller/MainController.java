@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -252,7 +253,6 @@ public class MainController {
         } catch (Exception ignored) {
         }
         if (id != null) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             MusicBand musicBand = table.getSelectionModel().getSelectedItem();
             try {
                 update_figure(musicBand);
@@ -268,7 +268,7 @@ public class MainController {
                 np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
                 description_field.setText(musicBand.getDescription());
                 try {
-                    date_field.setText(format.format(musicBand.getCreationDate()));
+                    date_field.setText(musicBand.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                 } catch (Exception e) {
                     date_field.setText("null");
                 }
@@ -301,7 +301,8 @@ public class MainController {
     void delYes() {
         if (id != null) {
             String result = ClientController.sendMessage(new Message(new RemoveServerCommand(), String.valueOf(id)));
-            if (result.equals("Объект удален")) {
+            if (result.equals("Элемент успешно удален")) {
+                ClientStart.error_windows(result, Color.WHITE);
                 update_table();
             } else {
                 ClientStart.error_windows(result, Color.RED);
@@ -352,7 +353,6 @@ public class MainController {
 
     @FXML
     void add() {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         setDefaultTheme();
         MusicBand musicBand = new MusicBand();
         Coordinates coordinates = new Coordinates();
@@ -530,66 +530,99 @@ public class MainController {
     @FXML
     void update() {
         if (id != null) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                boolean res = true;
-                if (name_field.getText().isEmpty()) {
-                    res = false;
-                    viewError("Имя пустое");
+                setDefaultTheme();
+                MusicBand musicBand = new MusicBand();
+                Coordinates coordinates = new Coordinates();
+                Person person = new Person();
+                boolean checkFailed = false;
+
+                try {
+                    musicBand.setName(name_field.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
                     name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                }
-                if (x_field.getText().isEmpty() || Double.parseDouble(x_field.getText()) <= -687 || !x_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
-                    res = false;
-                    viewError("X число больше -687");
-                    x_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                }
-                if (y_field.getText().isEmpty() || Float.parseFloat(y_field.getText()) < -1000f || !y_field.getText().matches("(([-+])?[0-9]+(\\.[0-9]+)?)+")) {
-                    res = false;
-                    viewError("Y число больше -1000");
-                    y_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
                 }
                 try {
-                    if (np_field.getText().isEmpty() || Integer.parseInt(np_field.getText()) <= 0 || !np_field.getText().matches("[-+]?\\d+")) {
-                        res = false;
-                        viewError("numberOfParticipants больше 0");
-                        np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    }
-                } catch (Exception e) {
-                    res = false;
-                    viewError("numberOfParticipants больше 0");
+                    musicBand.setGenre(genre_field.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    genre_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    musicBand.setNumberOfParticipants(Integer.valueOf(np_field.getText()));
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
                     np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
                 }
-                if (description_field.getText().isEmpty()) {
-                    res = false;
-                    viewError("Описание пустое");
+                try {
+                    musicBand.setDescription(description_field.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
                     description_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
                 }
-//                if (genre_field.getText().isEmpty() || !GenreReader.checkExist(genre_field.getText())) {
-//                    res = false;
-//                    viewError("genre(PSYCHEDELIC_ROCK,RAP,POP,POST_ROCK,POST_PUNK)");
-//                    genre_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//                }
-                if (res) {
-                    viewError("");
-                    setDefaultTheme();
-                    Date date;
-                    if (date_field.getText().equals("") || date_field.getText().equals("null")) {
-                        date = null;
-                    } else {
-                        date = format.parse(date_field.getText());
-                    }
-                    MusicBand musicBand = new MusicBand();
+                try {
+                    coordinates.setX(Long.valueOf(x_field.getText()));
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    x_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    coordinates.setY(Float.valueOf(y_field.getText()));
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    y_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    person.setName(person_name.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    person_name.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    person.setHeight(Double.parseDouble(person_height.getText()));
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    person_height.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    person.setPassportID(person_passport_id.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    person_passport_id.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                try {
+                    person.setEyeColor(person_eye_color.getText());
+                } catch (Exception exception) {
+                    viewError(exception.getMessage());
+                    person_eye_color.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+                    checkFailed = true;
+                }
+                musicBand.setUserName(UserHolder.getUser().getLogin());
+                musicBand.setCoordinates(coordinates);
+                musicBand.setFrontMan(person);
+
+                if (!checkFailed) {
+
                     musicBand.setId(id);
-                    update_figure(musicBand);
                     String result = ClientController.sendMessage(new Message(new UpdateServerCommand(), musicBand, String.valueOf(id)));
-                    if (!result.equals("Команда update выполнена")) {
+                    System.out.println(result);
+                    if (!result.equals("Элемент успешно обновлен!")) {
                         ClientStart.error_windows(result, Color.RED);
+                    } else {
+                        ClientStart.error_windows(result, Color.WHITE);
                     }
                     update_table();
                 }
-            } catch (ParseException e) {
-                viewError("Неправильный формат у даты");
-                date_field.setStyle("-fx-background-color: #ff0000; -fx-background-radius: 10");
             } catch (Exception e) {
                 viewError("Что-то пошло не так");
                 e.printStackTrace();
@@ -611,7 +644,7 @@ public class MainController {
         table_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         table_date.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
         table_description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        table_user.setCellValueFactory(new PropertyValueFactory<>("user_creator"));
+        table_user.setCellValueFactory(new PropertyValueFactory<>("userName"));
         mbData.addAll(ClientController.getData());
         table.setItems(mbData);
         menu1.setVisible(true);
@@ -667,14 +700,8 @@ public class MainController {
     @FXML
     public void delallYes(MouseEvent mouseEvent) {
         String result = ClientController.sendMessage(new Message(new ClearServerCommand()));
-        int i = 0;
-        for (MusicBand musicBand : ClientController.getData()) {
-            if (musicBand.getUserName().equals(UserHolder.getUser().getLogin())) {
-                ClientController.sendMessage(new Message(new RemoveServerCommand(), String.valueOf(musicBand.getId())));
-                i++;
-            }
-        }
-        ClientStart.error_windows("Удалено: " + i + " объектов", Color.WHITE);
+
+        ClientStart.error_windows(result, Color.WHITE);
 
         del_all_button.setVisible(true);
         del_all_yes_button.setVisible(false);
@@ -848,13 +875,13 @@ public class MainController {
         y_field.setPromptText(rb.getString("y_field"));
         genre_field.setPromptText(rb.getString("genre_field"));
         np_field.setPromptText(rb.getString("np_field"));
-        person_name.setPromptText(rb.getString("album_name_field"));
+        person_name.setPromptText(rb.getString("person_name_field"));
         date_field.setPromptText(rb.getString("date_field"));
-        person_height.setPromptText(rb.getString("album_tracks_field"));
+        person_height.setPromptText(rb.getString("person_height_field"));
         createdate_field.setPromptText(rb.getString("createdate_field"));
-        person_passport_id.setPromptText(rb.getString("album_length_field"));
+        person_passport_id.setPromptText(rb.getString("person_passport_id_field"));
         description_field.setPromptText(rb.getString("description_field"));
-        person_eye_color.setPromptText(rb.getString("album_sales_field"));
+        person_eye_color.setPromptText(rb.getString("person_eye_color_id"));
 
         clean_fields_button.setText(rb.getString("clean_fields_button"));
         add_button.setText(rb.getString("add_button"));
