@@ -11,7 +11,7 @@
 
 <!--suppress ALL -->
 
-<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lab.Controllers.MapController">
+<AnchorPane fx:id="parent" maxHeight="800.0" maxWidth="1200.0" minHeight="400.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="533.0" prefWidth="800.0" style="-fx-background-color: #47e5c8;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.MapController">
    <children>
       <AnchorPane layoutY="62.0" prefHeight="537.0" prefWidth="800.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="62.0">
          <children>
