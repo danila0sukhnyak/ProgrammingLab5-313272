@@ -126,7 +126,9 @@ public class MusicBand implements Comparable<MusicBand>, Serializable {
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+        if (creationDate != null) {
+            this.creationDate = creationDate;
+        }
     }
 
     @Override

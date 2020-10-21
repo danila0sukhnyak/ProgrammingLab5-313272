@@ -25,11 +25,9 @@ import org.example.model.Person;
 import org.example.util.UserHolder;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -90,7 +88,46 @@ public class MainController {
     private TextField description_field;
 
     @FXML
-    private TextField date_field;
+    private TextField createdate_field;
+
+    @FXML
+    private TextField name_field1;
+
+    @FXML
+    private TextField x_field1;
+
+    @FXML
+    private TextField y_field1;
+
+    @FXML
+    private TextField genre_field1;
+
+    @FXML
+    private TextField person_name1;
+
+    @FXML
+    private TextField person_height1;
+
+    @FXML
+    private TextField person_passport_id1;
+
+    @FXML
+    private TextField person_eye_color1;
+
+    @FXML
+    private TextField np_field1;
+
+    @FXML
+    private TextField description_field1;
+
+    @FXML
+    private TextField createdate_field1;
+
+    @FXML
+    private Text coordinates_text;
+
+    @FXML
+    private Text frontman_text;
 
     @FXML
     private Text chech_error;
@@ -103,9 +140,6 @@ public class MainController {
 
     @FXML
     private Rectangle square;
-
-    @FXML
-    private TextField createdate_field;
 
     @FXML
     private Button more_button;
@@ -168,9 +202,6 @@ public class MainController {
     private AnchorPane menu2;
 
     @FXML
-    private Button count_greater_button;
-
-    @FXML
     private Button del_all_button;
 
     @FXML
@@ -192,20 +223,16 @@ public class MainController {
     private Button filter_contains_name_button;
 
     @FXML
-    private TextField name_filter_contains;
-
-    @FXML
     private Button info_button;
 
     @FXML
     private Button remove_by_description_button;
 
-    @FXML
-    private TextField description;
-
-
     private double xOffSet;
     private double yOffSet;
+
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
 
     @FXML
     void makeDragable(MouseEvent event) {
@@ -268,11 +295,10 @@ public class MainController {
                 np_field.setText(String.valueOf(musicBand.getNumberOfParticipants()));
                 description_field.setText(musicBand.getDescription());
                 try {
-                    date_field.setText(musicBand.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                    createdate_field.setText(musicBand.getCreationDate().format(dateTimeFormatter));
                 } catch (Exception e) {
-                    date_field.setText("null");
+                    createdate_field.setText("null");
                 }
-                createdate_field.setText(String.valueOf(musicBand.getCreationDate()));
                 del_yes_button.setVisible(false);
                 del_no_button.setVisible(false);
                 del_button.setVisible(true);
@@ -355,10 +381,139 @@ public class MainController {
     void add() {
         setDefaultTheme();
         MusicBand musicBand = new MusicBand();
+        boolean checkFailed = false;
+        checkFailed = fillMusicBand(musicBand, checkFailed);
+
+        if (checkFailed) {
+            return;
+        }
+        try {
+            musicBand.setUserName(UserHolder.getUser().getLogin());
+            String s = ClientController.sendMessage(new Message(new AddServerCommand(), musicBand));
+            if (s.equals("Не прошла валидация на сервере. PasportID должен быть уникальным")) {
+                viewError("PasportID должен быть уникальным");
+                person_passport_id.setStyle("-fx-background-color: red; -fx-background-radius: 10");
+            }
+            if (s.equals("Элемент успешно добавлен!")) {
+                clean_fields();
+                ClientStart.error_windows("Элемент успешно добавлен!", Color.WHITE);
+            }
+        } catch (Exception e) {
+            viewError("Что-то пошло не так");
+            e.printStackTrace();
+        }
+        update_table();
+    }
+
+    @FXML
+    void clean_fields() {
+        id = null;
+        name_field.setText("");
+        x_field.setText("");
+        y_field.setText("");
+        np_field.setText("");
+        description_field.setText("");
+        genre_field.setText("");
+        person_name.setText("");
+        person_height.setText("");
+        person_passport_id.setText("");
+        person_eye_color.setText("");
+        name_field.setText("");
+        createdate_field.setText("");
+        name_field1.setText("");
+        x_field1.setText("");
+        y_field1.setText("");
+        np_field1.setText("");
+        description_field1.setText("");
+        genre_field1.setText("");
+        person_name1.setText("");
+        person_height1.setText("");
+        person_passport_id1.setText("");
+        person_eye_color1.setText("");
+        name_field1.setText("");
+        createdate_field1.setText("");
+        setDefaultTheme();
+        chech_error.setVisible(false);
+        text_error.setVisible(false);
+        chech_error1.setVisible(false);
+        text_error1.setVisible(false);
+        triangle.setVisible(false);
+        square.setVisible(false);
+        circle.setVisible(false);
+        user_color.setVisible(false);
+    }
+
+    private void setDefaultTheme() {
+        if (ClientStart.theme.equals("Light")) {
+            name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            x_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            y_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            np_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            description_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            genre_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            person_name.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            person_height.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            person_passport_id.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+            person_eye_color.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
+
+        } else if (ClientStart.theme.equals("Dark")) {
+            name_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            x_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            y_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            np_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            description_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            genre_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            person_name.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            person_height.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            person_passport_id.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+            person_eye_color.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
+        }
+    }
+
+    void viewError(String text) {
+        if (text.equals("")) {
+            chech_error.setVisible(false);
+            text_error.setText(text);
+            text_error.setVisible(false);
+        } else {
+            chech_error.setVisible(true);
+            text_error.setText(text);
+            text_error.setVisible(true);
+        }
+    }
+
+    @FXML
+    void update() {
+        if (id != null) {
+            try {
+                setDefaultTheme();
+                MusicBand musicBand = new MusicBand();
+                boolean checkFailed = false;
+                checkFailed = fillMusicBand(musicBand, checkFailed);
+                if (!checkFailed) {
+                    musicBand.setId(id);
+                    String result = ClientController.sendMessage(new Message(new UpdateServerCommand(), musicBand, String.valueOf(id)));
+                    System.out.println(result);
+                    if (!result.equals("Элемент успешно обновлен!")) {
+                        ClientStart.error_windows(result, Color.RED);
+                    } else {
+                        ClientStart.error_windows(result, Color.WHITE);
+                    }
+                    update_table();
+                }
+            } catch (Exception e) {
+                viewError("Что-то пошло не так");
+                e.printStackTrace();
+            }
+            update_table();
+        } else {
+            ClientStart.error_windows("Вы не выбрали объект", Color.RED);
+        }
+    }
+
+    private boolean fillMusicBand(MusicBand musicBand, boolean checkFailed) {
         Coordinates coordinates = new Coordinates();
         Person person = new Person();
-        boolean checkFailed = false;
-
         try {
             musicBand.setName(name_field.getText());
         } catch (Exception exception) {
@@ -429,210 +584,11 @@ public class MainController {
             person_eye_color.setStyle("-fx-background-color: red; -fx-background-radius: 10");
             checkFailed = true;
         }
-        if (checkFailed){
-            return;
-        }
-        try {
-            musicBand.setUserName(UserHolder.getUser().getLogin());
-            musicBand.setCoordinates(coordinates);
-            musicBand.setFrontMan(person);
-            String s = ClientController.sendMessage(new Message(new AddServerCommand(), musicBand));
-            if (s.equals("Не прошла валидация на сервере. PasportID должен быть уникальным")) {
-                viewError("PasportID должен быть уникальным");
-                person_passport_id.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-            }
-            if (s.equals("Элемент успешно добавлен!")) {
-                clean_fields();
-                ClientStart.error_windows("Элемент успешно добавлен!", Color.WHITE);
-            }
-        } catch (Exception e) {
-            viewError("Что-то пошло не так");
-            e.printStackTrace();
-        }
-        update_table();
+        musicBand.setUserName(UserHolder.getUser().getLogin());
+        musicBand.setCoordinates(coordinates);
+        musicBand.setFrontMan(person);
+        return checkFailed;
     }
-
-    @FXML
-    void clean_fields() {
-        id = null;
-        name_field.setText("");
-        x_field.setText("");
-        y_field.setText("");
-        np_field.setText("");
-        description_field.setText("");
-        genre_field.setText("");
-        person_name.setText("");
-        person_height.setText("");
-        person_passport_id.setText("");
-        person_eye_color.setText("");
-        date_field.setText("");
-        name_field.setText("");
-        createdate_field.setText("");
-        description.setText("");
-        name_filter_contains.setText("");
-        setDefaultTheme();
-        chech_error.setVisible(false);
-        text_error.setVisible(false);
-        chech_error1.setVisible(false);
-        text_error1.setVisible(false);
-        triangle.setVisible(false);
-        square.setVisible(false);
-        circle.setVisible(false);
-        user_color.setVisible(false);
-    }
-
-    private void setDefaultTheme() {
-        if (ClientStart.theme.equals("Light")) {
-            name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            x_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            y_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            np_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            description_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            genre_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_name.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_height.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_passport_id.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_eye_color.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-
-            date_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            description.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
-            name_filter_contains.setStyle("-fx-background-color: #ddfff8; -fx-background-radius: 10");
-        } else if (ClientStart.theme.equals("Dark")) {
-            name_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            x_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            y_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            np_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            description_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            genre_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_name.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_height.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_passport_id.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_eye_color.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            date_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            description.setStyle("-fx-background-color: #4C59D8; -fx-background-radius: 10");
-            name_filter_contains.setStyle("-fx-background-color: #4C59D8; -fx-background-radius: 10");
-        }
-    }
-
-    void viewError(String text) {
-        if (text.equals("")) {
-            chech_error.setVisible(false);
-            text_error.setText(text);
-            text_error.setVisible(false);
-        } else {
-            chech_error.setVisible(true);
-            text_error.setText(text);
-            text_error.setVisible(true);
-        }
-    }
-
-
-    @FXML
-    void update() {
-        if (id != null) {
-            try {
-                setDefaultTheme();
-                MusicBand musicBand = new MusicBand();
-                Coordinates coordinates = new Coordinates();
-                Person person = new Person();
-                boolean checkFailed = false;
-
-                try {
-                    musicBand.setName(name_field.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    name_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    musicBand.setGenre(genre_field.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    genre_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    musicBand.setNumberOfParticipants(Integer.valueOf(np_field.getText()));
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    np_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    musicBand.setDescription(description_field.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    description_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    coordinates.setX(Long.valueOf(x_field.getText()));
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    x_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    coordinates.setY(Float.valueOf(y_field.getText()));
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    y_field.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    person.setName(person_name.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    person_name.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    person.setHeight(Double.parseDouble(person_height.getText()));
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    person_height.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    person.setPassportID(person_passport_id.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    person_passport_id.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                try {
-                    person.setEyeColor(person_eye_color.getText());
-                } catch (Exception exception) {
-                    viewError(exception.getMessage());
-                    person_eye_color.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-                    checkFailed = true;
-                }
-                musicBand.setUserName(UserHolder.getUser().getLogin());
-                musicBand.setCoordinates(coordinates);
-                musicBand.setFrontMan(person);
-
-                if (!checkFailed) {
-
-                    musicBand.setId(id);
-                    String result = ClientController.sendMessage(new Message(new UpdateServerCommand(), musicBand, String.valueOf(id)));
-                    System.out.println(result);
-                    if (!result.equals("Элемент успешно обновлен!")) {
-                        ClientStart.error_windows(result, Color.RED);
-                    } else {
-                        ClientStart.error_windows(result, Color.WHITE);
-                    }
-                    update_table();
-                }
-            } catch (Exception e) {
-                viewError("Что-то пошло не так");
-                e.printStackTrace();
-            }
-            update_table();
-        } else {
-            ClientStart.error_windows("Вы не выбрали объект", Color.RED);
-        }
-    }
-
 
     @FXML
     void initialize() {
@@ -665,16 +621,30 @@ public class MainController {
 
     @FXML
     public void filter_contains(MouseEvent mouseEvent) {
-        if (name_filter_contains.getText().equals("")) {
-            chech_error1.setVisible(true);
-            text_error1.setVisible(true);
-            text_error1.setText("Вы не указали имя");
-            name_filter_contains.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-        } else {
-            name_filter_contains.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            ClientController.sendMessage(new Message(new FilterByDescriptionServerCommand(), name_filter_contains.getText()));
-            update_table();
-        }
+        ObservableList<MusicBand> filteredData = mbData.filtered(this::doFilter);
+        table.setItems(filteredData);
+    }
+
+    private boolean doFilter(MusicBand musicBand1) {
+        Coordinates coordinates1 = musicBand1.getCoordinates();
+        Person frontMan1 = musicBand1.getFrontMan();
+        return isContains(musicBand1.getName(), name_field1.getText()) &&
+                isContains(musicBand1.getDescription(), description_field1.getText()) &&
+                isContains(musicBand1.getNumberOfParticipants(), np_field1.getText()) &&
+                isContains(musicBand1.getGenre(), genre_field1.getText()) &&
+                isContains(coordinates1.getX(), x_field1.getText()) &&
+                isContains(coordinates1.getY(), y_field1.getText()) &&
+                isContains(frontMan1.getName(), person_name1.getText()) &&
+                isContains(frontMan1.getPassportID(), person_passport_id1.getText()) &&
+                isContains(frontMan1.getHeight(), person_height1.getText()) &&
+                isContains(frontMan1.getEyeColor(), person_eye_color1.getText()) &&
+                (createdate_field1.getText() == null || "".equals(createdate_field1.getText()) || musicBand1.getCreationDate().toLocalDate().equals(LocalDate.from(dateTimeFormatter.parse(createdate_field1.getText()))));
+    }
+
+    private boolean isContains(Object baseObject, Object compared) {
+        return (compared == null ||
+                String.valueOf(compared).isEmpty() ||
+                (baseObject != null && String.valueOf(baseObject).toUpperCase().contains(String.valueOf(compared).toUpperCase())));
     }
 
     @FXML
@@ -717,76 +687,9 @@ public class MainController {
 
     @FXML
     public void remove_by_description(MouseEvent mouseEvent) {
-        if (description.getText().equals("")) {
-            chech_error1.setVisible(true);
-            text_error1.setVisible(true);
-            text_error1.setText("Вы не указали описание");
-            description.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-        } else {
-            description.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            String result = ClientController.sendMessage(new Message(new RemoveByDescriptionServerCommand(), description.getText()));
-            if (!result.equals("Объект удален")) {
-                ClientStart.error_windows(result, Color.RED);
-            }
-            update_table();
-            chech_error1.setVisible(false);
-            text_error1.setVisible(false);
-        }
-    }
-
-    @FXML
-    public void count_greater(MouseEvent mouseEvent) {
-        try {
-            boolean res = true;
-//            if (album_name_field1.getText().isEmpty()) {
-//                res = false;
-//                viewError("Имя альбома пустое");
-//                album_name_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//            }
-//            try {
-//                if (album_tracks_field1.getText().isEmpty() || Integer.parseInt(album_tracks_field1.getText()) <= 0 || !album_tracks_field1.getText().matches("[-+]?\\d+")) {
-//                    res = false;
-//                    viewError("Album tracks число больше 0");
-//                    album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//                }
-//            } catch (Exception e) {
-//                res = false;
-//                viewError("Album tracks число больше 0");
-//                album_tracks_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//            }
-//            try {
-//                if (album_length_field1.getText().isEmpty() || Integer.parseInt(album_length_field1.getText()) <= 0 || !album_length_field1.getText().matches("[-+]?\\d+")) {
-//                    res = false;
-//                    viewError("Album length число больше 0");
-//                    album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//                }
-//            } catch (Exception e) {
-//                res = false;
-//                viewError("Album length число больше 0");
-//                album_length_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//            }
-//            try {
-//                if (album_sales_field1.getText().isEmpty() || Integer.parseInt(album_sales_field1.getText()) <= 0 || !album_sales_field1.getText().matches("[-+]?\\d+")) {
-//                    res = false;
-//                    viewError("Album sales число больше 0");
-//                    album_sales_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//                }
-//            } catch (Exception e) {
-//                res = false;
-//                viewError("Album sales число больше 0");
-//                album_sales_field1.setStyle("-fx-background-color: red; -fx-background-radius: 10");
-//            }
-//            if (res) {
-//                viewError("");
-//                setDefaultTheme();
-//                MusicBand musicBand = new MusicBand(0L, "", new Coordinates(0, 0f), LocalDateTime.now(), 0, "", null, MusicGenre.POP, new Album(album_name_field1.getText(), Integer.parseInt(album_tracks_field1.getText()), Integer.parseInt(album_length_field1.getText()), Integer.parseInt(album_sales_field1.getText())), ClientController.name);
-//                error_windows(ClientController.sendMessage(new Message(new MaxByIdServerCommand(), musicBand)), Color.WHITE);
-//                update_table();
-//            }
-        } catch (Exception e) {
-            viewError("Что-то пошло не так");
-            e.printStackTrace();
-        }
+        mbData.stream()
+                .filter(this::doFilter)
+                .forEach(s -> ClientController.sendMessage(new Message(new RemoveServerCommand(), String.valueOf(s.getId()))));
         update_table();
     }
 
@@ -851,19 +754,9 @@ public class MainController {
         del_yes_button.setText(rb.getString("del_yes_button"));
         del_no_button.setText(rb.getString("del_no_button"));
 
-
-//        album_name_field1.setPromptText(rb.getString("album_name_field1"));
-//        album_length_field1.setPromptText(rb.getString("album_length_field1"));
-//        album_sales_field1.setPromptText(rb.getString("album_sales_field1"));
-//        album_tracks_field1.setPromptText(rb.getString("album_tracks_field1"));
-
-        name_filter_contains.setPromptText(rb.getString("name_filter_contains"));
-        description.setPromptText(rb.getString("description"));
-
         filter_contains_name_button.setText(rb.getString("filter_contains_name_button"));
         remove_by_description_button.setText(rb.getString("remove_by_description_button"));
 
-        count_greater_button.setText(rb.getString("count_greater_button"));
         info_button.setText(rb.getString("info_button"));
         clean_fields_button.setText(rb.getString("clean_fields_button"));
         filter_button.setText(rb.getString("filter_button"));
@@ -876,7 +769,6 @@ public class MainController {
         genre_field.setPromptText(rb.getString("genre_field"));
         np_field.setPromptText(rb.getString("np_field"));
         person_name.setPromptText(rb.getString("person_name_field"));
-        date_field.setPromptText(rb.getString("date_field"));
         person_height.setPromptText(rb.getString("person_height_field"));
         createdate_field.setPromptText(rb.getString("createdate_field"));
         person_passport_id.setPromptText(rb.getString("person_passport_id_field"));
@@ -888,6 +780,8 @@ public class MainController {
         update_button.setText(rb.getString("update_button"));
         filter_button.setText(rb.getString("filter_button"));
         more_button.setText(rb.getString("more_button"));
+        frontman_text.setText(rb.getString("frontman_text"));
+        coordinates_text.setText(rb.getString("coordinates_text"));
     }
 
     public void change_language(MouseEvent mouseEvent) {

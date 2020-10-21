@@ -35,7 +35,7 @@ public class ClientStart extends Application {
         primaryStage.setScene(new Scene(root));
 //        primaryStage.setMaxWidth(820);
 //        primaryStage.setMaxHeight(600);
-        primaryStage.setWidth(800);
+        primaryStage.setWidth(920);
         primaryStage.setHeight(533);
 //        primaryStage.setMinWidth(820);
 //        primaryStage.setMinHeight(600);
