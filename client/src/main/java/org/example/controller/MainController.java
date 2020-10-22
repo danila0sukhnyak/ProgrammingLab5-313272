@@ -441,6 +441,7 @@ public class MainController {
         square.setVisible(false);
         circle.setVisible(false);
         user_color.setVisible(false);
+        update_table();
     }
 
     private void setDefaultTheme() {
