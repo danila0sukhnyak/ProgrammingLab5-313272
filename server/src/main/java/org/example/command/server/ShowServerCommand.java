@@ -3,6 +3,7 @@ package org.example.command.server;
 import org.example.model.Message;
 import org.example.model.MusicBand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShowServerCommand extends AbstractServerCommand {
@@ -21,7 +22,7 @@ public class ShowServerCommand extends AbstractServerCommand {
     public Message execute(Message args) {
         List<MusicBand> all = musicBandDAO.getAll();
         if (all.isEmpty()) {
-            return new Message("Коллекция пустая");
+            return new Message(new ArrayList<>());
         } else {
             return new Message(all);
         }

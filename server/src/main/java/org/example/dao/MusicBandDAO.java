@@ -153,6 +153,7 @@ public class MusicBandDAO implements IMusicBandDAO {
         serviceLocator.getDbController().setConnection(DatabaseUtil.getConnection());
         try {
             serviceLocator.getDbController().remove(id);
+            serviceLocator.getDbController().getConnection().commit();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             try {
@@ -196,6 +197,7 @@ public class MusicBandDAO implements IMusicBandDAO {
             DataStorage dataStorage = new DataStorage();
             dataStorage.setBands(all);
             init(dataStorage);
+            serviceLocator.getDbController().getConnection().commit();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             try {

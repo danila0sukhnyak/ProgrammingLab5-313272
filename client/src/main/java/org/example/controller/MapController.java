@@ -126,8 +126,8 @@ public class MapController {
 
     @FXML
     private void animation() {
-        double const_x = ((line_x.getEndX()-line_x.getStartX())/2);
-        double const_y = ((line_y.getEndY() - line_y.getStartY())/2);
+        double const_x = ((line_x.getEndX()-line_x.getStartX())/2)+20;
+        double const_y = ((line_y.getEndY() - line_y.getStartY())/2)+20;
 
 
         for (MusicBand musicBand : ClientController.getData()) {
