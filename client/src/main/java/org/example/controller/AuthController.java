@@ -157,6 +157,7 @@ public class AuthController {
             if (result.equals("Имя пользователя занято")) {
                 register_name_error.setVisible(true);
             } else if (result.equals("Успешная регистрация")) {
+                UserHolder.setUser(new User(register_name_field.getText(), register_pass_field.getText()));
                 register_name_error.setVisible(false);
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/main" + ClientStart.theme + ".fxml"));
@@ -187,7 +188,6 @@ public class AuthController {
             current = new Locale(lan[0]);
         }
         ResourceBundle rb = ResourceBundle.getBundle("Client", current);
-        //ResourceBundle rb = ResourceBundle.getBundle("Client", new UTF8Control());
         language_button.setText(rb.getString("language_button"));
         login_text.setText(rb.getString("login_text"));
         register_text.setText(rb.getString("register_text"));
@@ -196,8 +196,6 @@ public class AuthController {
         login_name_field.setPromptText(rb.getString("login_name_field"));
         login_pass_field.setPromptText(rb.getString("login_pass_field"));
         login_button.setText(rb.getString("login_button"));
-
-
         register_text.setText(rb.getString("register_text"));
         register_button.setText(rb.getString("register_button"));
         register_name_error.setText(rb.getString("register_name_error"));

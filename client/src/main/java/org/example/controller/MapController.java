@@ -126,8 +126,8 @@ public class MapController {
 
     @FXML
     private void animation() {
-        double const_x = ((line_x.getEndX()-line_x.getStartX())/2)+30;
-        double const_y = ((line_y.getEndY() - line_y.getStartY())/2)+24.5;
+        double const_x = ((line_x.getEndX()-line_x.getStartX())/2);
+        double const_y = ((line_y.getEndY() - line_y.getStartY())/2);
 
 
         for (MusicBand musicBand : ClientController.getData()) {
@@ -140,23 +140,19 @@ public class MapController {
             b = Math.abs(musicBand.getUserName().hashCode() * 250000000 % 250);
             Color ucolor = Color.rgb(r, g, b);
 
-
-            Circle t = new Circle(musicBand.getNumberOfParticipants());
+            int radius = musicBand.getNumberOfParticipants() / 2;
+            Circle t = new Circle(radius);
             t.setCenterX(const_x);
             t.setCenterY(const_y);
-            t.setFill(ucolor);
-
+            t.setFill(color);
+            t.setStroke(ucolor);
+            t.setStrokeWidth(radius/4);
             KeyValue xValue = new KeyValue(t.centerXProperty(), const_x+musicBand.getCoordinates().getX());
             KeyValue yValue = new KeyValue(t.centerYProperty(), const_y-musicBand.getCoordinates().getY());
-
             KeyFrame keyFrame = new KeyFrame(Duration.millis(1000), xValue, yValue);
-
-
             Timeline timeline = new Timeline();
             timeline.getKeyFrames().addAll(keyFrame);
             timeline.play();
-
-
             objects.getChildren().add(t);
         }
     }
