@@ -95,6 +95,8 @@ public class MapController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/auth"+ ClientStart.theme+".fxml"));
             ClientStart.stage.setScene(new Scene(root));
+            ClientStart.stage.setWidth(756);
+            ClientStart.stage.setHeight(470);
             ClientStart.stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,7 +120,6 @@ public class MapController {
 
     @FXML
     void initialize() {
-        version_text.setText(String.valueOf(ClientStart.version));
         name.setText(UserHolder.getUser().getLogin());
         update_language();
         animation();
@@ -174,6 +175,8 @@ public class MapController {
     public void table(MouseEvent mouseEvent) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/main"+ ClientStart.theme+".fxml"));
+            ClientStart.stage.setWidth(920);
+            ClientStart.stage.setHeight(530);
             ClientStart.stage.setScene(new Scene(root));
             ClientStart.stage.show();
         } catch (IOException e) {
@@ -191,6 +194,8 @@ public class MapController {
         ClientStart.change_theme();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/map"+ ClientStart.theme+".fxml"));
+            ClientStart.stage.setWidth(800);
+            ClientStart.stage.setHeight(533);
             ClientStart.stage.setScene(new Scene(root));
             ClientStart.stage.show();
         } catch (IOException e) {

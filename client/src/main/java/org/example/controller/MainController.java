@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -266,6 +267,8 @@ public class MainController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/auth" + ClientStart.theme + ".fxml"));
             ClientStart.stage.setScene(new Scene(root));
+            ClientStart.stage.setWidth(756);
+            ClientStart.stage.setHeight(470);
             ClientStart.stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -593,7 +596,6 @@ public class MainController {
 
     @FXML
     void initialize() {
-        version_text.setText(String.valueOf(ClientStart.version));
         name.setText(UserHolder.getUser().getLogin());
 
         // устанавливаем тип и значение которое должно хранится в колонке
@@ -837,6 +839,8 @@ public class MainController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/map" + ClientStart.theme + ".fxml"));
             ClientStart.stage.setScene(new Scene(root));
+            ClientStart.stage.setWidth(800);
+            ClientStart.stage.setHeight(533);
             ClientStart.stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -856,6 +860,8 @@ public class MainController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/main" + ClientStart.theme + ".fxml"));
             ClientStart.stage.setScene(new Scene(root));
+            ClientStart.stage.setWidth(920);
+            ClientStart.stage.setHeight(530);
             ClientStart.stage.show();
         } catch (IOException e) {
             e.printStackTrace();

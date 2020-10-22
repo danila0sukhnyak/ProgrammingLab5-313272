@@ -46,7 +46,6 @@ public class ServerController {
             server.configureBlocking(false);
             server.socket().bind(new InetSocketAddress(host, port));
             server.register(selector, SelectionKey.OP_ACCEPT);
-
             System.out.println("Server started");
 
             StringBuilder console_line = new StringBuilder();

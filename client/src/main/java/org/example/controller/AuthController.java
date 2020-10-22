@@ -14,6 +14,8 @@ import org.example.ClientStart;
 import org.example.command.server.AuthServerCommand;
 import org.example.command.server.RegisterServerCommand;
 import org.example.enums.AuthState;
+
+
 import org.example.model.Message;
 import org.example.model.User;
 import org.example.util.UserHolder;
@@ -106,13 +108,19 @@ public class AuthController {
             login_name_error.setVisible(false);
             if (result.equals("Неправильный пароль")) {
                 login_pass_error.setVisible(true);
-            } else if (result.equals(AuthState.AUTH_SUCCESS.name())) {
+            }
+            else if(result.equals("Ошибка авторизации")){
+                login_pass_error.setVisible(true);
+            }
+            else if (result.equals(AuthState.AUTH_SUCCESS.name())) {
                 login_pass_error.setVisible(false);
                 UserHolder.setUser(user);
                 //login_button.getScene().getWindow().hide();
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/main" + ClientStart.theme + ".fxml"));
                     ClientStart.stage.setScene(new Scene(root));
+                    ClientStart.stage.setWidth(920);
+                    ClientStart.stage.setHeight(530);
                     ClientStart.stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -156,12 +164,15 @@ public class AuthController {
 
             if (result.equals("Имя пользователя занято")) {
                 register_name_error.setVisible(true);
-            } else if (result.equals("Успешная регистрация")) {
+            }
+            else if (result.equals("Успешная регистрация")) {
                 UserHolder.setUser(new User(register_name_field.getText(), register_pass_field.getText()));
                 register_name_error.setVisible(false);
                 try {
                     Parent root = FXMLLoader.load(getClass().getResource("/main" + ClientStart.theme + ".fxml"));
                     ClientStart.stage.setScene(new Scene(root));
+                    ClientStart.stage.setWidth(920);
+                    ClientStart.stage.setHeight(530);
                     ClientStart.stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -175,7 +186,6 @@ public class AuthController {
 
     @FXML
     void initialize() {
-        version_text.setText(String.valueOf(ClientStart.version));
         update_language(ClientStart.language);
     }
 
@@ -216,6 +226,8 @@ public class AuthController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/auth" + ClientStart.theme + ".fxml"));
             ClientStart.stage.setScene(new Scene(root));
+            ClientStart.stage.setWidth(756);
+            ClientStart.stage.setHeight(470);
             ClientStart.stage.show();
         } catch (IOException e) {
             e.printStackTrace();
