@@ -165,6 +165,9 @@ public class AuthController {
             if (result.equals("Имя пользователя занято")) {
                 register_name_error.setVisible(true);
             }
+            else if (result.equals("Пользователь уже существует")) {
+                register_name_error.setVisible(true);
+            }
             else if (result.equals("Успешная регистрация")) {
                 UserHolder.setUser(new User(register_name_field.getText(), register_pass_field.getText()));
                 register_name_error.setVisible(false);
