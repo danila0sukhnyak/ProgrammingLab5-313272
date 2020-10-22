@@ -67,7 +67,6 @@ public class ErrorController {
 
     @FXML
     void initialize() {
-        version_text.setText(String.valueOf(ClientStart.version));
         error_text.setText(text);
         error_text.setFill(color);
     }

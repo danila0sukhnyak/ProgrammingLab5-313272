@@ -142,6 +142,7 @@ public class MapController {
             Color ucolor = Color.rgb(r, g, b);
 
             int radius = musicBand.getNumberOfParticipants() / 2;
+            radius *= 5;
             Circle t = new Circle(radius);
             t.setCenterX(const_x);
             t.setCenterY(const_y);
