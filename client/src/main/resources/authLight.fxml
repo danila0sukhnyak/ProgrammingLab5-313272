@@ -9,7 +9,7 @@
 
 <!--suppress ALL -->
 
-<AnchorPane fx:id="parent" maxHeight="470.0" maxWidth="756.0" minHeight="470.0" minWidth="756.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="470.0" prefWidth="756.0" style="-fx-background-color: #2E8B57;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AuthController">
+<AnchorPane fx:id="parent" maxHeight="470.0" maxWidth="756.0" minHeight="470.0" minWidth="756.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="470.0" prefWidth="756.0" style="-fx-background-color: #2E8B57;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.controller.AuthController">
    <children>
       <Text fill="WHITE" layoutX="307.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LAB 8" textAlignment="CENTER" wrappingWidth="141.7367401123047" AnchorPane.leftAnchor="307.0" AnchorPane.topAnchor="20.0">
          <font>

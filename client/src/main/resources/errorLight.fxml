@@ -7,7 +7,7 @@
 
 <!--suppress ALL -->
 
-<AnchorPane fx:id="par" maxHeight="800.0" maxWidth="1200.0" minHeight="337.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="337.0" prefWidth="615.0" style="-fx-background-color: #2E8B57;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ErrorController">
+<AnchorPane fx:id="par" maxHeight="800.0" maxWidth="1200.0" minHeight="337.0" minWidth="600.0" onMouseClicked="#makeDragable" onMouseMoved="#makeDragable" prefHeight="337.0" prefWidth="615.0" style="-fx-background-color: #2E8B57;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.controller.ErrorController">
    <children>
       <Text fill="WHITE" layoutX="258.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LAB 8" wrappingWidth="99.73674011230469">
          <font>
