@@ -114,7 +114,7 @@ public class Bootstrap implements ServiceLocator, Runnable{
     }
 
     /**
-     * Добавляет объект комманды в мапу
+     * Добавляет объект команды в мапу
      */
     private void registryCommand(final AbstractCommand command) {
         if (command.command() == null || command.command().isEmpty()) {

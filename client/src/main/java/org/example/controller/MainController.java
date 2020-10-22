@@ -448,30 +448,16 @@ public class MainController {
     }
 
     private void setDefaultTheme() {
-        if (ClientStart.theme.equals("Light")) {
-            name_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            x_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            y_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            np_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            description_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            genre_field.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_name.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_height.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_passport_id.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-            person_eye_color.setStyle("-fx-background-color:  #ddfff8; -fx-background-radius: 10");
-
-        } else if (ClientStart.theme.equals("Dark")) {
-            name_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            x_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            y_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            np_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            description_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            genre_field.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_name.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_height.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_passport_id.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-            person_eye_color.setStyle("-fx-background-color:  #4C59D8; -fx-background-radius: 10");
-        }
+        name_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        x_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        y_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        np_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        description_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        genre_field.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        person_name.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        person_height.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        person_passport_id.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
+        person_eye_color.setStyle("-fx-background-color:   #317f43; -fx-background-radius: 5");
     }
 
     void viewError(String text) {
@@ -746,7 +732,7 @@ public class MainController {
             current = new Locale(lan[0]);
         }
         ResourceBundle rb = ResourceBundle.getBundle("Client", current);
-        //ResourceBundle bundle = ResourceBundle.getBundle("com.example.i18n.text", new UTF8Control());
+
         map_button.setText(rb.getString("map_button"));
         language_button.setText(rb.getString("language_button"));
         del_all_button.setText(rb.getString("del_all_button"));
@@ -785,6 +771,19 @@ public class MainController {
         more_button.setText(rb.getString("more_button"));
         frontman_text.setText(rb.getString("frontman_text"));
         coordinates_text.setText(rb.getString("coordinates_text"));
+
+
+        name_field1.setPromptText(rb.getString("name_field"));
+        x_field1.setPromptText(rb.getString("x_field"));
+        y_field1.setPromptText(rb.getString("y_field"));
+        genre_field1.setPromptText(rb.getString("genre_field"));
+        np_field1.setPromptText(rb.getString("np_field"));
+        person_name1.setPromptText(rb.getString("person_name_field"));
+        person_height1.setPromptText(rb.getString("person_height_field"));
+        createdate_field1.setPromptText(rb.getString("createdate_field"));
+        person_passport_id1.setPromptText(rb.getString("person_passport_id_field"));
+        description_field1.setPromptText(rb.getString("description_field"));
+        person_eye_color1.setPromptText(rb.getString("person_eye_color_id"));
     }
 
     public void change_language(MouseEvent mouseEvent) {

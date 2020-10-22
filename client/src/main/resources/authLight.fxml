@@ -32,7 +32,7 @@
          </font>
       </Text>
       <TextField fx:id="login_name_field" layoutX="35.0" layoutY="111.0" prefHeight="40.0" prefWidth="218.0" promptText="Имя" style="-fx-background-color: #317f43;" AnchorPane.bottomAnchor="319.0" AnchorPane.leftAnchor="35.0" />
-      <Button fx:id="login_button" layoutX="290.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#login" prefHeight="82.0" prefWidth="325.0" style="-fx-background-color: #317f43; -fx-border-radius: 0;" text="Вперед к мечте" textFill="#d6d6d6" AnchorPane.bottomAnchor="278.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="49.0">
+      <Button fx:id="login_button" layoutX="290.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#login" prefHeight="93.0" prefWidth="417.0" style="-fx-background-color: #317f43; -fx-border-radius: 0;" text="Вперед к мечте" textFill="#d6d6d6" AnchorPane.bottomAnchor="267.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="49.0">
          <font>
             <Font name="Arial Italic" size="17.0" />
          </font>
@@ -43,10 +43,10 @@
             <Font name="Arial Bold" size="32.0" />
          </font>
       </Text>
-      <TextField fx:id="register_name_field" layoutX="35.0" layoutY="289.0" prefHeight="40.0" prefWidth="218.0" promptText="Имя" style="-fx-background-color: #317f43;" AnchorPane.leftAnchor="35.0" />
-      <PasswordField fx:id="register_pass_field" layoutX="35.0" layoutY="340.0" prefHeight="40.0" prefWidth="218.0" promptText="Пароль" style="-fx-background-color: #317f43;" />
-      <PasswordField fx:id="register_pass2_field" layoutX="35.0" layoutY="383.0" prefHeight="40.0" prefWidth="218.0" promptText="Пароль ещё раз" style="-fx-background-color: #317f43;" />
-      <Button fx:id="register_button" layoutX="290.0" layoutY="339.0" mnemonicParsing="false" onMouseClicked="#register" prefHeight="82.0" prefWidth="325.0" style="-fx-background-color: #317f43; -fx-border-radius: 0;" text="Начнём приключение" textFill="#d6d6d6" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="49.0">
+      <TextField fx:id="register_name_field" layoutX="35.0" layoutY="284.0" prefHeight="40.0" prefWidth="218.0" promptText="Имя" style="-fx-background-color: #317f43;" AnchorPane.leftAnchor="35.0" />
+      <PasswordField fx:id="register_pass_field" layoutX="35.0" layoutY="339.0" prefHeight="40.0" prefWidth="218.0" promptText="Пароль" style="-fx-background-color: #317f43;" />
+      <PasswordField fx:id="register_pass2_field" layoutX="35.0" layoutY="392.0" prefHeight="40.0" prefWidth="218.0" promptText="Пароль ещё раз" style="-fx-background-color: #317f43;" />
+      <Button fx:id="register_button" layoutX="290.0" layoutY="339.0" mnemonicParsing="false" onMouseClicked="#register" prefHeight="93.0" prefWidth="417.0" style="-fx-background-color: #317f43; -fx-border-radius: 0;" text="Начнём приключение" textFill="#d6d6d6" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="290.0" AnchorPane.rightAnchor="49.0">
          <font>
             <Font name="Arial Italic" size="17.0" />
          </font>
